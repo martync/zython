@@ -7,8 +7,8 @@ class Command(NoArgsCommand):
     def handle_noargs(self, **options):
         imports = ('malt', 'hop', 'misc', 'yeast', 'style')
         for i in imports:
-            print "Proceed %s" % i
+            print("Proceed %s" % i)
             exec("from brew.management.commands.ingredients.%s import do_import" % i)
             do_import()
-            print "-"*30
+            print("-"*30)
         return ""

@@ -1,5 +1,5 @@
 from django.views.generic import TemplateView, FormView
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from calculator.forms import ABVForm
 

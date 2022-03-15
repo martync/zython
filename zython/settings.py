@@ -3,7 +3,10 @@
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 import sys
-BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
 sys.path.insert(0, os.path.join(BASE_DIR, "apps"))
 sys.path.insert(0, os.path.join(BASE_DIR, "apps-ext"))
 
@@ -20,11 +23,14 @@ TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = [
     "zython.me",
+    "127.0.0.1"
 ]
 
 DEFAULT_FROM_EMAIL = 'ToBeer <noreply@zython.me>'
 
 SITE_ID = 1
+
+WSGI_APPLICATION = 'zython.wsgi.application'
 
 AUTH_USER_MODEL = "auth.User"
 
@@ -44,10 +50,8 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.comments',
+    'django_comments',
 
-    "compressor",
-    'pagination',
     'account',
     'accounts',
     'calculator',
@@ -55,8 +59,6 @@ INSTALLED_APPS = (
     'public',
     'brew',
     'units',
-    'social_auth',
-    'avatar',
     'stocks',
     'guardian',
     'crispy_forms',
@@ -65,56 +67,52 @@ INSTALLED_APPS = (
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = (
+    'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     "account.middleware.TimezoneMiddleware",
-    'pagination.middleware.PaginationMiddleware',
 )
 
-TEMPLATE_CONTEXT_PROCESSORS = (
-    "django.contrib.auth.context_processors.auth",
-    "django.core.context_processors.debug",
-    "django.core.context_processors.i18n",
-    "django.core.context_processors.media",
-    "django.core.context_processors.static",
-    "django.core.context_processors.request",
-    "django.core.context_processors.tz",
-    "django.contrib.messages.context_processors.messages",
-    'units.context_processors.user_units',
-    'units.context_processors.unit_menu',
-    'account.context_processors.account',
-    'social_auth.context_processors.social_auth_by_name_backends',
-    'social_auth.context_processors.social_auth_backends',
-    'social_auth.context_processors.social_auth_by_type_backends',
-    'social_auth.context_processors.social_auth_login_redirect',
-
-)
-
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField' 
 ROOT_URLCONF = 'zython.urls'
 LOGIN_URL = '/account/login/'
 WSGI_APPLICATION = 'zython.wsgi.application'
 
-TEMPLATE_DIRS = (
-    os.path.join(BASE_DIR, "templates"),
 
-)
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [os.path.join(BASE_DIR, "templates"), ],
+        'APP_DIRS': True,
+        'OPTIONS': {
+        "context_processors": (
+                "django.contrib.auth.context_processors.auth",
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                # "django.core.context_processors.i18n",
+                # "django.core.context_processors.media",
+                # "django.core.context_processors.static",
+                # "django.core.context_processors.tz",
+                "django.contrib.messages.context_processors.messages",
+                'units.context_processors.user_units',
+                'units.context_processors.unit_menu',
+                'account.context_processors.account',
+                'django.template.context_processors.request'
+            )
+        },
+    },
+]
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 
 
 AUTHENTICATION_BACKENDS = (
-    'social_auth.backends.twitter.TwitterBackend',
-    'social_auth.backends.facebook.FacebookBackend',
-    'social_auth.backends.google.GoogleOAuthBackend',
-    'social_auth.backends.google.GoogleOAuth2Backend',
-    'social_auth.backends.google.GoogleBackend',
     'django.contrib.auth.backends.ModelBackend',
     'guardian.backends.ObjectPermissionBackend',
 )
@@ -122,7 +120,6 @@ AUTHENTICATION_BACKENDS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    'compressor.finders.CompressorFinder'
 )
 
 
@@ -132,9 +129,24 @@ STATICFILES_FINDERS = (
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
+]
 
 # Internationalization
 # https://docs.djangoproject.com/en/dev/topics/i18n/
@@ -156,19 +168,17 @@ USE_TZ = False
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/dev/howto/static-files/
 
-STATIC_URL = '/medias/static/'
-STATIC_ROOT = '%s/medias/static/' % BASE_DIR
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
+
 MEDIA_ROOT = '%s/medias/' % BASE_DIR
 
 # Third party settings
 ANONYMOUS_USER_ID = -1
 ACCOUNT_ACTIVATION_DAYS = 7
-AVATAR_ALLOWED_FILE_EXTS = ('.jpg', '.png', '.jpeg', '.gif')
-AVATAR_STORAGE_DIR = "medias/avatars/"
 ACCOUNT_EMAIL_CONFIRMATION_EMAIL = False
-
-SOCIAL_AUTH_NEW_USER_REDIRECT_URL = '/account/new-social-auth-user/'
-SOCIAL_AUTH_NEW_ASSOCIATION_REDIRECT_URL = '/account/new-social-auth-user/'
 
 LOGIN_ERROR_URL = LOGIN_URL
 

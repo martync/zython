@@ -96,7 +96,7 @@ class BaseIngredientMixin(object):
 
 
 class BaseStockModel(models.Model):
-    stock_user = models.ForeignKey(User, null=True, blank=True)
+    stock_user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
     stock_added = models.DateTimeField(null=True, blank=True)
 
     def is_in_stock(self):

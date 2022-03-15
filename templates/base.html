@@ -1,4 +1,4 @@
-{% load i18n compress staticfiles fm_tags %}<!DOCTYPE html>
+{% load i18n static fm_tags %}<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
@@ -116,6 +116,8 @@
   </form>
    <ul class="nav navbar-nav navbar-right">
      <li class="dropdown">
+        {% get_current_language as LANGUAGE_CODE %}
+
         <a href="#" class="dropdown-toggle" data-toggle="dropdown">{% get_language_info for LANGUAGE_CODE as lang %}
         {{ lang.code|upper }} <span class="caret"></span></a>
         <ul class="dropdown-menu" role="menu">
@@ -212,14 +214,12 @@
 <script>
   var CONFIRM_DELETE_MSG = "{% trans "Are you sure you want to delete this ?" %}";
 </script>
-{% compress js %}
 <script src="{% static "js/jquery-1.11.1.min.js" %}"></script>
 <script src="{% static "js/bootstrap/bootstrap.min.js" %}"></script>
 <script src="{% static "js/ekko-lightbox.min.js" %}"></script>
 <script src="{% static "js/jquery.flot.min.js" %}"></script>
 <script src="{% static "js/app.js" %}"></script>
 <script type="text/javascript" src="{% static "fm/js/fm.js" %}?v={% fm_version %}"></script>
-{% endcompress %}
 
 {% block js %}{% endblock js %}
 </body>

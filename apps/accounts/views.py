@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import update_session_auth_hash
 from django.views.generic.edit import FormView
 from django.contrib import messages
-from braces.views import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 import account.views
 from .forms import ZythonLoginForm, ZythonSettingForm, ZythonSignupForm
 

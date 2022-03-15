@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.views.generic import TemplateView, ListView, DeleteView
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from fm.views import AjaxCreateView, AjaxUpdateView
 from .base import BaseStockMixin, BaseIngredientViewMixin, BaseStockIngredientFormMixin
 

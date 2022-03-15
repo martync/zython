@@ -6,11 +6,12 @@ from django.db import models
 from django.db.models import Sum
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
-from django.contrib.comments.signals import comment_was_posted
+from django_comments.signals import comment_was_posted
 from django.contrib.contenttypes.models import ContentType
 from django.conf import settings
 from django.core.cache import cache
 from django.utils.text import slugify
+from django.urls import reverse
 from public.helpers import send_email_html
 from units.conversions import kg_to_lb, ebc_to_srm, \
     srm_to_ebc, l_to_gal, g_to_oz, f_to_c, c_to_f
@@ -86,9 +87,8 @@ class BeerStyle(models.Model):
     def __unicode__(self):
         return "%s - %s" % (self.get_number(), self.name)
 
-    @models.permalink
     def get_absolute_url(self):
-        return ('brew_style_detail', [str(self.id)])
+        return reverse('brew_style_detail', args=(str(self.id)))
 
     def og_range(self):
         return [self.original_gravity_min, self.original_gravity_max]
@@ -115,11 +115,11 @@ class Recipe(models.Model):
     """
     name = models.CharField(_('Name'), max_length=100)
     slug_url = models.SlugField(null=True, blank=True, default="zython")
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True, blank=True)
     batch_size = models.DecimalField(_('Batch size'), max_digits=8, decimal_places=1, help_text="L")
-    style = models.ForeignKey('BeerStyle', verbose_name=_('Style'), blank=True, null=True)
+    style = models.ForeignKey('BeerStyle', verbose_name=_('Style'), blank=True, null=True, on_delete=models.SET_NULL)
     recipe_type = models.CharField(_('Type'), choices=RECIPE_TYPE_CHOICES, default="allgrain", max_length=50)
     mes_original_gravity = GravityField(null=True, blank=True)
     mes_final_gravity = GravityField(null=True, blank=True)
@@ -253,15 +253,14 @@ class Recipe(models.Model):
     def __unicode__(self):
         return self.name
 
-    @models.permalink
     def get_absolute_url(self):
-        return ('brew_recipe_detail', [str(self.id), self.slug_url])
+        return reverse('brew_recipe_detail', args=(str(self.id), self.slug_url))
 
     class Meta:
         ordering = ('-created',)
-        permissions = (
-            ('view_recipe', _(u'View recipe')),
-        )
+        # permissions = (
+        #     ('view_recipe', _(u'View recipe')),
+        # )
 
     # - - -
     # Water volumes
@@ -610,7 +609,7 @@ class UpdateRecipeModel(object):
 
 
 class RecipeMalt(UpdateRecipeModel, BaseMalt):
-    recipe = models.ForeignKey('Recipe')
+    recipe = models.ForeignKey('Recipe', on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=8, decimal_places=2, help_text="kg")
     malt = models.ForeignKey(Malt, null=True, blank=True, on_delete=models.SET_NULL)
 
@@ -625,7 +624,7 @@ class RecipeMalt(UpdateRecipeModel, BaseMalt):
 
 
 class RecipeHop(UpdateRecipeModel, BaseHop):
-    recipe = models.ForeignKey('Recipe')
+    recipe = models.ForeignKey('Recipe', on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=8, decimal_places=2, help_text="g")
     boil_time = models.DecimalField(max_digits=6, decimal_places=1, null=True, blank=True)
     dry_days = models.DecimalField(max_digits=3, decimal_places=1, null=True, blank=True)
@@ -673,7 +672,7 @@ class RecipeHop(UpdateRecipeModel, BaseHop):
 
 
 class RecipeYeast(UpdateRecipeModel, BaseYeast):
-    recipe = models.ForeignKey('Recipe')
+    recipe = models.ForeignKey('Recipe', on_delete=models.CASCADE)
     yeast = models.ForeignKey(Yeast, null=True, blank=True, on_delete=models.SET_NULL)
 
     @property
@@ -683,7 +682,7 @@ class RecipeYeast(UpdateRecipeModel, BaseYeast):
 
 
 class RecipeMisc(UpdateRecipeModel, BaseMisc):
-    recipe = models.ForeignKey('Recipe')
+    recipe = models.ForeignKey('Recipe', on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=10, decimal_places=2, help_text="g")
     time = models.DecimalField(max_digits=10, decimal_places=1)
     time_unit = models.CharField(choices=MISC_TIME_CHOICES, default="mins", max_length=50)
@@ -702,7 +701,7 @@ class RecipeMisc(UpdateRecipeModel, BaseMisc):
 
 
 class MashStep(UpdateRecipeModel, models.Model):
-    recipe = models.ForeignKey('Recipe')
+    recipe = models.ForeignKey('Recipe', on_delete=models.CASCADE)
     ordering = models.IntegerField(default=0)
     name = models.CharField(_("Name"), max_length=100)
     step_type = models.CharField(_("Step type"), choices=MASH_TYPE_CHOICES, max_length=50)

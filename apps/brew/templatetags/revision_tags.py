@@ -1,6 +1,6 @@
 from django import template
-from django.db.models.loading import get_model
-from django.utils import simplejson as json
+from django.apps import apps
+import json
 
 register = template.Library()
 
@@ -9,14 +9,14 @@ register = template.Library()
 def humanize_datas(value):
     """Try to humanize the serialized datas from django-reversion"""
     py_val = json.loads(value)[0]
-    model = get_model(*py_val['model'].split('.',1))
+    model = apps.get_model(*py_val['model'].split('.', 1))
     fields = py_val['fields']
     error_fields = ('recipe', 'user', 'style')  # Fields that can generate errors are ommited
     for error_field in error_fields:
         if fields.has_key(error_field):
             del fields[error_field]
     human_datas = []
-    for k, v in fields.iteritems():
+    for k, v in fields.items():
         model_field = model._meta.get_field(k)
         human_datas.append({
             'label': unicode(model_field.verbose_name),

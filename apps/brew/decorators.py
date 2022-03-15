@@ -14,6 +14,6 @@ def recipe_author(f, redirect_url="/"):
             pass
         return HttpResponseRedirect("/")
 
-    wrap.__doc__ = f.__doc__
-    wrap.__name__ = f.__name__
+    # wrap.__doc__ = f.__doc__
+    # wrap.__name__ = f.__name__
     return wrap

@@ -6,9 +6,9 @@ from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from django.views.generic import ListView, CreateView, DetailView, DeleteView
 from django.views.generic.edit import FormView, UpdateView
-from django.core.urlresolvers import reverse
+from django.urls import reverse
+from django.contrib.auth.mixins import LoginRequiredMixin
 
-from braces.views import LoginRequiredMixin
 from units.views import UnitViewFormMixin
 from guardian.shortcuts import get_users_with_perms, assign, get_perms_for_model, remove_perm
 from fm.views import JSONResponseMixin
@@ -132,7 +132,7 @@ class RecipeDetailView(RecipeSlugUrlMixin, RecipeViewableMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super(RecipeDetailView, self).get_context_data(**kwargs)
         if self.request.user.is_active:
-            for key, model in SLUG_MODELROOT.iteritems():
+            for key, model in SLUG_MODELROOT.items():
                 context['%s_list' % key] = model.objects.all()
                 context['%s_form' % key] = SLUG_MODELFORM[key](request=self.request)
         self.template_name_suffix = "_%s" % self.page

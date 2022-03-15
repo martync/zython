@@ -1,29 +1,27 @@
-from django.conf.urls import patterns, url
+from django.urls import re_path
 from .views.stocks import StockHomeView, StockIngredientView,\
     StockIngredientAddView, StockIngredientUpdateView, StockIngredientDeleteView
 
 
-urlpatterns = patterns(
-    '',
-
-    url(r'^$',
+urlpatterns = [
+    re_path(r'^$',
         StockHomeView.as_view(),
         name='stock_home'),
 
-    url(r'^(?P<ingredient>\w+)/$',
+    re_path(r'^(?P<ingredient>\w+)/$',
         StockIngredientView.as_view(),
         name='stock_ingredient'),
 
-    url(r'^(?P<ingredient>\w+)/add/$',
+    re_path(r'^(?P<ingredient>\w+)/add/$',
         StockIngredientAddView.as_view(),
         name='stock_ingredient_add'),
 
-    url(r'^(?P<ingredient>\w+)/(?P<pk>\d+)/edit/$',
+    re_path(r'^(?P<ingredient>\w+)/(?P<pk>\d+)/edit/$',
         StockIngredientUpdateView.as_view(),
         name='stock_ingredient_edit'),
 
-    url(r'^(?P<ingredient>\w+)/(?P<pk>\d+)/delete/$',
+    re_path(r'^(?P<ingredient>\w+)/(?P<pk>\d+)/delete/$',
         StockIngredientDeleteView.as_view(),
         name='stock_ingredient_delete'),
 
-)
+]
