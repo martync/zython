@@ -1,0 +1,27 @@
+{% load i18n %}
+
+<form action="{{ request.path }}" method="POST" class="form">{% csrf_token %}
+  <div class="row">
+      {% for field in form %}
+        {% if field.name != "notes" %}
+          <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+              <div class="form-group {{ field.errors|yesno:"has-error," }}">
+                  <label class="control-label">{% trans field.label %} {% if field.field.required %}*{% endif %}</label>
+                    {{ field }}
+                    {{ field.help_text }}
+                    {{ field.errors }}
+              </div>
+          </div>
+          {% if forloop.counter|divisibleby:2 %}
+            </div>
+            <div class="row">
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+  <div class="form-group {{ field.errors|yesno:"has-error," }}">
+    <label for="{{ form.notes.auto_id }}">{% trans form.notes.label %}</label>
+    {{ form.notes }}
+  </div>
+</form>

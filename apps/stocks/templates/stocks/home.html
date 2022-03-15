@@ -1,0 +1,25 @@
+{% extends "stocks/base.html" %}
+{% load i18n %}
+
+
+{% block content %}    
+    <div class="well lead">
+        <h2>Nouveau !! <small>Tu peux désormais gérer tes stocks sur Zython.</small></h2>
+        <hr>
+        <h3>Comment ça fonctionne ?</h3>
+        
+        <p>Commence par saisir ton stock à partir de cette page (les 3 liens ci-dessus dans la barre violette)</p>
+        <p>
+            Ensuite, quand tu fais ta recette, tu verras apparaitre en premier les ingrédients que tu as rentré dans ton stock ainsi que la quantité restante.
+            (Facile à reconnaitre, il sont précédés de cette icône <span class="text-success"><i class="fa fa-database"></i></span>)
+        </p>
+        <hr>
+        <p>
+            <h3>Important <span class="label label-warning">important</span></h3>
+            Au fur et à mesure que tu crées ta recette, ton stock ne diminuera pas. J'imagine que tu vas vouloir ajouter, enlever, retirer des ingrédients, jusqu'à ce que la recette soit parfaite. <br>
+            Quand tu es sûr que tu ne changeras rien, tu appuieras sur le bouton "Déstocker". <br>
+            Et laisse la magie opérer.
+        </p>
+    </div>
+{% endblock content %}
+

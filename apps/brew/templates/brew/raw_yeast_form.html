@@ -1,0 +1,93 @@
+{% extends "brew/base_ingredient_form.html" %}
+{% load i18n form_tags %}
+
+{% block table_content %}
+    <thead>
+        <tr>
+            <th style="width:40px;" class='text-center'>#</th>
+            <th>{% trans "Name" %}</th>
+            <th>{% trans "Lab" %}</th>
+            <th>{% trans "Product ID" %}</th>
+            <th>{% trans "Type" %}</th>
+            <th>{% trans "Form" %}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for yeast in form.get_ingredient_list %}
+            <tr class='row_ingredient' data-json-object='{{ yeast.json_object }}'>
+                <td>
+                    <a href="#" class='btn btn-success btn-xs add-this-ingredient'>
+                        <span class="glyphicon glyphicon-plus"></span>
+                    </a>
+                </td>
+                <td>
+                    {% if yeast.stock_user == request.user %}
+                        <span class="text-success"><i class="fa fa-database"></i>
+                        ({% trans "In stock" %}:
+                        {{ yeast.stock_amount }})</span>
+                    {% endif %}
+                    {{ yeast.name }}
+                </td>
+                <td>{{ yeast.laboratory }}</td>
+                <td>{{ yeast.product_id }}</td>
+                <td>{{ yeast.get_yeast_type_display }}</td>
+                <td>{{ yeast.get_form_display }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+{% endblock table_content %}
+
+
+
+{% block form_content %}
+{% addFormField form.yeast_id %}
+<div class="row">
+    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+        {% addFormField form.name %}
+    </div>
+    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+        {% addFormField form.laboratory %}
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+        {% addFormField form.product_id %}
+    </div>
+    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+        {% addFormField form.yeast_type %}
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+        {% addFormField form.form %}
+    </div>
+    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+        {% addFormField form.flocculation %}
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+        {% addFormField form.min_attenuation %}
+    </div>
+    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+        {% addFormField form.max_attenuation %}
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+        {% addFormField form.min_temperature %}
+    </div>
+    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+        {% addFormField form.max_temperature %}
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+        {% addFormField form.best_for %}
+    </div>
+    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+        {% addFormField form.notes %}
+    </div>
+</div>
+{% endblock form_content %}
+

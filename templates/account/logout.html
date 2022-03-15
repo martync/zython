@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load i18n form_tags %}
+
+
+
+{% block page %}
+    <div class="jumbotron ">
+        <div class="container">
+            <h1>
+                {% block title %}
+                    {% trans "Log out" %}
+                {% endblock title %}
+            </h1>
+        </div>
+    </div>
+    {{ block.super }}
+{% endblock page %}
+
+
+
+{% block content %}
+
+
+<div class="well text-center lead">
+    {% trans "You will log out. Have a nice day." %} <br>
+
+<form action="." method="POST">{% csrf_token %}
+<input type="submit" value="Log out now !!!" class='btn btn-primary btn-lg'>
+    
+</form>
+
+    <div class="vspace-xl"></div>
+    <img src="http://spi3uk.itvnet.lv/upload2/articles/70/709284/images/The-Simpson-gifs-1.gif" alt="">
+    <div class="vspace-xl"></div>
+    <a href="/">{% trans "Return home" %}</a>
+</div>
+
+<div class="vspace-xl"></div>
+<div class="vspace-xl"></div>
+<div class="vspace-xl"></div>
+{% endblock content %}

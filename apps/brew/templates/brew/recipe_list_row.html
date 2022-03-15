@@ -1,0 +1,23 @@
+{% load i18n unit_tags staticfiles %}
+<tr>
+    <td class="text-center">
+        <a href="{{ object.get_absolute_url }}">
+        {% with object.color_image as image %}
+        <picture>
+            <source srcset="{% static "images/beer_colors_20/" %}{{ image }}.png"
+            media="(max-width: 500px)" width="20px" height="20px">
+            <img src="{% static "images/beer_colors_50/" %}{{ image }}.png" alt="">
+        </picture>
+        {% endwith %}
+        </a>
+    </td>
+    <td>{% if object.private %}<img src="{% static "images/fugue/lock.png" %}" alt="Private" rel="tooltip" width="16px" height="16px" title="{% trans "This recipe is private" %}">{% endif %}
+        <a href="{{ object.get_absolute_url }}">{{ object.name }}</a> <br>{{ object.get_recipe_type_display }}{% if object.style %}- {{ object.style }}{% endif %}
+    </td>
+    <td>{{ object.get_abv|floatformat:1 }}%</td>
+    <td>{{ object.get_ibu|floatformat:0 }} IBU</td>
+    <td>{% local_unit "volume" object.batch_size 0 %}</td>
+    <td>
+        <a href="{% url "brew_recipe_user" object.user.username %}">{{ object.user.username }}</a> <br>{{ object.created|date:"d/m/Y" }}
+    </td>
+</tr>

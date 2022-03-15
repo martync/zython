@@ -1,0 +1,29 @@
+{% extends "base_email.html" %}
+{% load i18n %}
+{% load url from future %}
+
+
+{% block title %}
+{% if recipe_author %}
+    {% blocktrans with comment.user.username|title as username %}{{ username }} has commented his recipe{% endblocktrans %}
+{% else %}
+    {% blocktrans with comment.user.username|title as username %}{{ username }} has posted a new comment on your recipe{% endblocktrans %}
+{% endif %}
+{% endblock title %}
+
+
+{% block content %}
+{% if recipe_author %}
+    {% blocktrans with recipe.name as recipe_name and comment.user.username as username%}{{ username }}  has commented his recipe {{ recipe_name }} :{% endblocktrans %}
+{% else %}
+    {% blocktrans with recipe.name as recipe_name and comment.user.username as username%}{{ username }} wrote a comment on your recipe {{ recipe_name }} :{% endblocktrans %}
+{% endif %}
+<br><br>
+<i>"{{ comment.comment|linebreaksbr }}"</i>
+<br><br>
+<a href="http://{{ current_site.domain }}{% url "brew_recipe_comments" recipe.id recipe.slug %}" style="color:#3DAFDF;">{% if recipe_author %}
+    {% blocktrans with recipe.name as recipe_name %}Go to the recipe {{ recipe_name }}{% endblocktrans %}
+{% else %}
+    {% trans "Go to my recipe" %}
+{% endif %}</a>
+{% endblock content %}

@@ -1,0 +1,9 @@
+{% load i18n %}
+<form action="{{ request.path }}" method="POST" id="id_ingredient_form" class="form-horizontal">{% csrf_token %}
+    <div class="well">
+        {% blocktrans %}
+            You're about to clone the recipe <i>"{{ object }}"</i>. <br>
+            After you click [OK], the recipe will be added to your list and you'll be redirected to your clone. <br>
+        {% endblocktrans %}
+    </div>
+</form>

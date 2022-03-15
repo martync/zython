@@ -1,0 +1,66 @@
+{% extends "brew/base_ingredient_form.html" %}
+{% load i18n form_tags unit_tags %}
+
+{% block table_content %}
+    <thead>
+        <tr>
+            <th style="width:40px;" class='text-center'>#</th>
+            <th>{% trans "Name" %}</th>
+            <th>{% trans "Type" %}</th>
+            <th>{% trans "Use for" %}</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for misc in form.get_ingredient_list %}
+    <tr class='row_ingredient' data-json-object='{{ misc.json_object }}'>
+        <td class='text-center'>
+            <a href="#" class='btn btn-success btn-xs add-this-ingredient'>
+                <span class="glyphicon glyphicon-plus"></span>
+            </a>
+        </td>
+        <td>{{ misc.name }}</td>
+        <td>{{ misc.get_misc_type_display }}</td>
+        <td>{{ misc.get_use_in_display }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+{% endblock table_content %}
+
+
+
+{% block form_content %}
+
+<div class="row">
+    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+        {% addFormField form.amount %}
+    </div>
+    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+        {% addFormField form.use_in %}
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+        {% addFormField form.time %}
+    </div>
+    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+        {% addFormField form.time_unit %}
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+        {% addFormField form.name %}
+    </div>
+    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+        {% addFormField form.misc_type %}
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+        {% addFormField form.usage %}
+    </div>
+    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+        {% addFormField form.notes %}
+    </div>
+</div>
+
+{% endblock %}

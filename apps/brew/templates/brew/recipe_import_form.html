@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+    <h1>{% trans "Import your recipe" %}</h1>
+    <br>
+    <form action="." method="POST" enctype="multipart/form-data">{% csrf_token %}
+        {% for field in form %}
+            <div class="control-group {% if field.errors %}error{% endif %}">
+                <label for="{{ field.auto_id }}" class='control-label'>{{ field.label }}</label>
+                <div class="controls">
+                    {{ field }}
+                    {% if field.help_text %}
+                        <span class="help-inline">{{ field.help_text }}</span>
+                    {% endif %}
+                    {{ field.errors }}
+                </div>
+            </div>
+        {% endfor %}
+        <div class="form-actions">
+            <input class='btn btn-success' type="submit" value="{% trans "Envoyer" %}">
+        </div>
+
+    </form>
+
+{% endblock content %}

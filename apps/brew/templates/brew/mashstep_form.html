@@ -1,0 +1,45 @@
+{% load i18n unit_tags form_tags %}
+
+<form action="{{ request.path }}" method="POST" id="id_ingredient_form" class="form-horizontal">{% csrf_token %}
+    {% addFormField form.name size="S" %}
+    {% addFormField form.step_type size="S" %}
+
+    <div class="row">
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+            {% addFormField form.temperature size="L" %}
+        </div>
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+            {% addFormField form.water_added size="L" %}
+            {% if form.instance.is_first_step %}
+                <div style="margin-top:-30px;margin-bottom:10px;" class="col-sm-offset-4 col-md-offset-4 col-lg-offset-4" id="id_result_ratio">{% trans "Ratio water/grain" %}: </div>
+            {% endif %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+            {% addFormField form.step_time size="L" %}
+        </div>
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+            {% addFormField form.rise_time size="L" %}
+        </div>
+    </div>
+
+</form>
+
+<script type="text/javascript">
+$(document).ready(function() { 
+    function update_ratio(){
+        grain = parseFloat("{% local_unit "weight" form.instance.recipe.get_total_grain 0 %}".split(" ")[0]);
+        water = parseFloat($("#id_water_added").val());
+        ratio = water/grain;
+        ratio = ratio.toFixed(1);
+        $("#id_result_ratio").text("{% trans "Ratio water/grain" %}: " + ratio)
+    }
+    update_ratio();
+    $("#id_water_added").keyup(function(){
+        update_ratio();
+    }).blur(function(){
+        update_ratio();
+    });
+});
+</script>

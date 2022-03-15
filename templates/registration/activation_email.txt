@@ -1,0 +1,9 @@
+{% load i18n %}{% url "registration_activate" activation_key as activation_url %}
+{% blocktrans with site as site and new_user.first_name as prenom and new_user.last_name as nom and new_user.username as username %}
+Hi {{ prenom }} {{ nom }},
+
+You have to finish your registration on {{ site }} by click on this link below : 
+http://{{ site }}{{ activation_url }}
+
+Thank you ! 
+{% endblocktrans %}

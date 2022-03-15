@@ -1,0 +1,69 @@
+{% extends "base_printable.html" %}
+{% load i18n unit_tags staticfiles %}
+
+{% block content %}
+
+<img class="pull-right" src="{% static "images/beer_colors_50/" %}{{ object.color_image }}.png" alt="{{ object.name }} beer color" style="width:40px;" width="40px" />
+
+<h1>{% block title %}{{ object.name }}{% endblock title %} <small>- {{ object.style.name }}</small></h1>
+
+<table class='bigcol'><tr>
+    <td>
+        <b>{% trans "Type" %}</b> : {{ object.get_recipe_type_display }} <br>
+        <b>{% trans "Batch size" %}</b> : {% local_unit "volume" object.batch_size 0 %}<br>
+        <b>{% trans "Boil size" %}</b> : {% local_unit "volume" object.boil_size 0 %}<br>        
+    </td>
+    <td>
+        <b>{% trans "Created date" %}</b> : {{ object.created|date }}<br>
+        <b>{% trans "Created by" %}</b> : {{ object.user.username }}<br>
+        <b>{% trans "Efficiency" %}</b> : {{ object.efficiency }}% <br>
+    </td>
+</tr></table>
+
+<p><hr></p>
+
+<table class='bigcol'><tr>
+    <td>
+        <h2>{% trans "Estimated beer profile" %}</h2>
+       <p>
+           <b>{% trans "Pre-boil gravity" %}</b>: {{ object.get_preboil_gravity }} <br>
+           <b>{% trans "Original gravity" %}</b>: {{ object.get_original_gravity }} <br>
+           <b>{% trans "Final gravity" %}</b>: {{ object.get_final_gravity }} <br>
+           <b>{% trans "Color" %}</b>: {% local_unit "color" object.get_ebc %} <br>
+           <b>{% trans "ABV" %}</b>: {{ object.get_abv|floatformat:"1" }}%<br>
+           <b>{% trans "Bitterness" %}</b>: {{ object.get_ibu }} IBU<br>
+       </p>
+    </td>
+    <td>
+        <h2>{% trans "Real profile" %}</h2>
+        <p>
+            <b>{% trans "Batch size" %}</b>: .......................<br>
+            <b>{% trans "Pre-boil gravity" %}</b>: .................... <br>
+            <b>{% trans "Original gravity" %}</b>: .................... <br>
+            <b>{% trans "Final gravity" %}</b>: ....................<br>
+            <b>{% trans "ABV" %}</b>: ....................<br>
+        </p>
+
+    </td>
+</tr></table>
+
+<p><hr></p>
+
+<h2>{% trans "Ingredients" %}</h2>
+<br>
+{% include "brew/recipe_ingredients.html" %}
+
+<p><br></p>
+
+<h2>{% trans "Mash detail" %}</h2><br>
+{% include "brew/recipe_mashsteps.html" %}
+{% endblock content %}
+
+
+{% block extrahead %}
+<style type="text/css">
+body{padding:30px 80px!important;}
+table.bigcol{width:99%;}table.bigcol tr td{width:49%;}
+.container{width:800px;}
+</style>
+{% endblock extrahead %}

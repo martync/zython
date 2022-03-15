@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+<h1>{% block title %}{% trans "Login" %}{% endblock %}</h1>
+<p><br></p>
+{% if form.non_field_errors %}
+	<div class="alert alert-error">{{ form.non_field_errors  }}
+</div>	
+{% endif %}
+{% if request.user.is_active %}
+	<div class="alert alert-info">
+		{% trans "You are logged in." %}
+		<b>{{ request.user.username }}</b>
+	</div>
+{% else %}
+	<form action="." method="post" class="form-horizontal">{% csrf_token %}
+	    <div class='login_box'>
+	        <fieldset>
+
+		    	{% for field in form %}
+		    		<div class="control-group {% if field.errors %}error{% endif %}">
+		    			<label for="{{ field.auto_id }}" class='control-label'>{{ field.label }}</label>
+		    			<div class="controls">
+		    				{{ field }}
+		    				{% if field.help_text %}
+		    					<span class="help-inline">{{ field.help_text }}</span>
+		    				{% endif %}
+		    				{{ field.errors }}
+		    			</div>
+		    		</div>
+		    	{% endfor %}
+				<p><br></p>
+				<div class="form-actions">
+					<input type="submit" class='btn btn-primary' value="{% trans "Log in" %}" />
+					- 
+					<a href="{% url "registration_register" %}">{% trans "Register" %}</a>
+				</div>
+		    </fieldset>
+			</div>
+			<input type="hidden" name="next" value="{{ next }}" id="next"/>
+	</form>
+{% endif %}
+
+{% endblock %} 
+
+
+{% block extrahead %}
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$("#id_username").focus();
+			{% if form.non_field_errors %}
+			    {% for e in form.non_field_errors %}
+				    notify("error", { text:'{{ e|safe|addslashes }}'});
+			    {% endfor %}
+			{% endif %}
+		});
+	</script>
+{% endblock %}

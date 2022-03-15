@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% load i18n form_tags staticfiles %}
+
+
+{% block page %}
+    <div class="jumbotron ">
+        <div class="container">
+            <h1>
+                {% block title %}
+					{% if form.instance.id %}
+						{% trans "Edit" %} {{ form.instance }}
+					{% else %}
+						{% trans "Add a new recipe" %}
+					{% endif %}
+				{% endblock title %}
+            </h1>
+        </div>
+    </div>
+    {{ block.super }}
+{% endblock page %}
+
+
+
+{% block content %}
+
+<form action="." method="POST" autocomplete="off" role="form">{% csrf_token %}
+
+	<div class="vspace"></div>
+
+{% comment %}
+	
+		'efficiency', 'private',
+            '', '',
+            'mash_tun_deadspace', '',
+            'evaporation_rate', 'grain_temperature'
+{% endcomment %}
+
+
+	<div class="well form-help-inline">
+		<div class="row">
+			<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+				{% addFormField form.batch_size simple=1 %}
+			</div>
+			<div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
+				{% addFormField form.name simple=1 %}
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+				{% addFormField form.efficiency simple=1 %}
+			</div>
+			<div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
+				
+				<div class="row">
+					<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+						{% addFormField form.recipe_type simple=1 %}
+					</div>
+					<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+						{% addFormField form.recipe_style simple=1 %}
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<label for="{{ form.private.auto_id }}">
+			<img src="{% static "images/fugue/lock.png" %}" alt="">
+			{{ form.private }}
+			{{ form.private.label }}
+			<span class="text-muted">{{ form.private.help_text }}</span>
+		</label>
+	</div>
+	<div class="vspace"></div>
+	<fieldset class='form-horizontal form-help-inline small-input'>
+		<legend>{% trans "Préférences" %}</legend>
+		{% addFormField form.mash_tun_deadspace size="L" %}
+		{% addFormField form.boiler_tun_deadspace size="L" %}
+		{% addFormField form.evaporation_rate size="L" %}
+		{% addFormField form.grain_temperature size="L" %}
+	</fieldset>
+
+	
+	<hr>
+
+
+	<div class="text-center">
+		<input type="submit" class="btn btn-success btn-lg" value="{% if form.instance %}{% trans "Save" %}{% else %}{% trans "Add a new recipe" %}{% endif %}">
+		{% if form.instance.id %}
+			<a href="{{ form.instance.get_absolute_url }}" class="btn">{% trans "Return to recipe" %}</a>
+		{% endif %}
+	</div>
+
+</form>
+
+<div class="vspace-xl"></div>
+<div class="vspace-xl"></div>
+
+{% endblock content %}
+
+{% block extrahead %}
+<style type="text/css">
+
+.row-private img{margin-bottom:4px;}
+.preferences input{
+	width:40px;
+	text-align: center;
+}
+#id_batch_size, #id_efficiency, .small-input input{
+	width:80px;
+}
+</style>
+{% endblock extrahead %}

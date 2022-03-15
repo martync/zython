@@ -1,0 +1,30 @@
+
+{% block form_field_content %}
+    <div class="form-group form-row-{{ field.name }} {% if field.errors %}has-error{% endif %} {{ field.field.required|yesno:"required," }}" id="{{ field.name }}_row">
+        {% block form_field_label_tag %}
+            <label
+                {% block form_field_label_tag_attrs %}
+                for="{{ field.auto_id }}"
+                {% endblock form_field_label_tag_attrs %}
+            >
+                {% if label %} {{ label }} {% else %} {{ field.label }} {% endif %}
+                {% if field.field.required and fieldset.name != "disciplines" %}
+                    <span class="red"> * </span>
+                {% endif %}
+            </label>
+        {% endblock form_field_label_tag %}
+
+        {% block form_field_control %}
+            {{ field }}
+            {% if field.help_text and show_help_text %}
+                <div class="help-block">
+                {{ field.help_text|safe }}
+                </div>
+            {% endif %}
+            {% if field.errors %}
+            <div class="text-danger">{{ field.errors }}</div>
+            {% endif %}
+        {% endblock form_field_control %}
+    </div>
+{% endblock form_field_content %}
+

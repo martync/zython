@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block page %}
+<div class="row">
+    <div class="large-12 columns" role="content">
+        {% block content %}{% endblock content %}
+    </div>
+    <aside class="large-3 columns">
+        {% block aside %}{% endblock aside %}
+    </aside>
+</div>
+{% endblock page %}

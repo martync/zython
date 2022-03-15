@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load i18n form_tags %}
+
+
+
+{% block page %}
+    <div class="jumbotron ">
+        <div class="container">
+            <h1>
+                {% block title %}
+                    {% trans "Register" %}
+                {% endblock title %}
+            </h1>
+        </div>
+    </div>
+    {{ block.super }}
+{% endblock page %}
+
+
+
+{% block content %}
+
+
+<form action=".?invitation_key={{ request.GET.invitation_key}}" method="POST" class="form-horizontal">{% csrf_token %}
+	<div class="row">
+	<div class="col-xs-1 col-sm-1 col-md-1 col-lg-1">
+		
+	</div>
+		<div class="col-xs-7 col-sm-7 col-md-7 col-lg-7">
+			{% for field in form %}
+				{% addFormField field size="L" %}
+			{% endfor %}
+		</div>
+	</div>
+	<hr>
+	<div class="text-center">
+		<input type="submit" value="{% trans "Register" %}" class='btn btn-success btn-lg' />
+	</div>
+</form>
+<div class="vspace-xl"></div>
+<hr>
+<div class="vspace-xl"></div>
+{% endblock %}

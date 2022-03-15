@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+<h1>{%trans "Your account is successfully created !"%}</h1>
+
+<div class="alert alert-success">
+	{% blocktrans %}You've just joined ToBeer, thank you ! <br>Enjoy :){% endblocktrans %}
+</div>
+
+{% endblock %}
+

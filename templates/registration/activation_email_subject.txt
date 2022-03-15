@@ -1,0 +1,2 @@
+{% load i18n %}
+{% blocktrans with site as site%}Account acrtivation on {{site }}{% endblocktrans %}

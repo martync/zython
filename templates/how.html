@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+<h1>{% block title %}
+        {% trans "Formulas" %}
+    {% endblock title %}
+</h1>
+
+<div class="alert">
+    Le contenu de cette page n'est disponible qu'en français actuellement.
+</div>
+
+
+<h2>Recette pour les exemples ci-dessous</h2>
+
+<pre>
+    <b>Tout grain - 20L - Efficacité 75%</b>
+    5.00kg / Pale Malt / 5.9EBC / Potentiel : 1.037
+    0.40kg / Carared / 40.0EBC / Potentiel : 1.034
+    40.00g / Target / 11.0% / 60min
+    15.00g / Strisslespalt / 4.0% / 10min
+
+    <b>Empattage</b>
+    65.6°C - 60min
+    75.0°C - 10min
+</pre>
+
+
+<p><br><br></p>
+
+
+<h2>Couleur - <em>The Morey Equation</em></h2>
+<p>
+    La plupart des calculs demande la conversion des unités en gallons et SRM pour la couleur. <br>
+    Taille du brassin : 20L = <b>5.28 gal</b> <br>
+    Pale malt : 5kg = <b>11.02 pounds</b> / 5.9EBC = <b>3.0SRM</b> <br>
+    Carared : 5kg = <b>0.88 pounds</b> / 40EBC = <b>20.0SRM</b> <br>
+</p> 
+<br>
+<p>
+    Source : <a href="http://brewwiki.com/index.php/Estimating_Color" target="_blank">http://brewwiki.com/index.php/Estimating_Color</a>
+</p>
+<pre>
+      (11.02*3.0) / 5.28
+    + (0.88*20.0) / 5.28
+    --------------------
+                    9.54 MCU
+
+    SRM = 1.4922 X (9.54^0.6859)
+    = <b>7.03 SRM</b>
+</pre>
+
+
+<p><br><br></p>
+
+
+<h2>Densité originale</h2>
+<p>
+    Taille du brassin : 20L = <b>5.28 gal</b> <br>
+    Efficacité = 0.75 <br>
+    Pale malt : 5kg = <b>11.02 pounds</b> / 5.9EBC = <b>3.0SRM</b> <br>
+    Carared : 5kg = <b>0.88 pounds</b> / 40EBC = <b>20.0SRM</b> <br>
+</p>
+<br>
+<pre>
+      11.02 X (1.037-1)X1000 X 0,75
+    +  0,88 X (1.034-1)X1000 X 0,75
+    -------------------------------
+                             328.24
+
+    OG = ((328.24/5.28)/1000)+1 = <b>1.062</b>
+</pre>
+
+
+<p><br><br></p>
+
+
+<h2>Densité finale</h2>
+<p>
+    L'exemple est donnée pour une levure ayant un taux d'atténuation de 70%, avec un moût d'une densité originale de 1.062 (comme ci-dessus). <br>
+    <em>(Par défaut, le logiciel définira une valeur de 75% d'atténuation par défaut si aucune levure n'est renseignée).</em>
+</p>
+<br>
+<pre>
+    FG = ((62-(0.70*62)) / 1000) + 1 = <b>1.019</b>
+</pre>
+
+
+<p><br><br></p>
+
+
+<h2>Amertume</h2>
+<p>
+    Si la méthode DryHop est sélectionnée, l'IBU renvoyé est 0. <br>
+    Un petit tour par la conversion : 
+    
+    Taille du brassin : 20L = <b>5.28 gal</b> <br>
+    Target 40.00g = <b>1.4oz</b> <br>
+    Strisslespalt 15.00g = <b>0.5oz</b>
+    <br><br>
+    Nous avons aussi besoin de connaitre la densité originale = 1.062
+</p>
+<br>
+<p>
+    Source : <a href="http://realbeer.com/hops/research.html" target="_blank">http://realbeer.com/hops/research.html</a>
+</p>
+<pre>
+    <b>Target: </b>
+    (1.65 X (0.000125^<u>0.062</u>) X (1-e^(-0.04 x <u>60</u>)) / 4.15)  X  (<u>0.11</u> X <u>1.4</u> X 7490 / <u>5.28</u>)
+                                                                              = <b>45.6 IBU</b>
+
+    <b>Strisslespalt: </b>
+    (1.65 X (0.000125^<u>0.062</u>) X (1-e^(-0.04 x <u>10</u>)) / 4.15)  X  (<u>0.04</u> X <u>0.5</u> X 7490 / <u>5.28</u>)
+                                                                              = <b>2.3 IBU</b>
+</pre>
+
+<p>
+    <span class="label label-warning">Particularités</span> : la section ci dessous est un point à améliorer.
+</p>
+<p>
+    Si le houblon sélectionné est en pellet, l'indice trouvé sera multiplié par 1.105. <br>
+    Par exemple, si notre Strisslespalt était en pellet, nous aurions : <br>
+    2.3 X 1.105 = <b>2.5 IBU</b>
+    <br>
+    <br>
+    Idem pour la méthode de "<i>first wort hopping</i>", l'indice est identique. <br>
+    Par exemple, si nous avions ajouté notre Target en "<i>first wort hopping</i>", nous aurions : 
+    45.6 X 1.105 = <b>50 IBU</b>
+</p>
+
+{% endblock content %}
+
+

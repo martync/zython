@@ -1,0 +1,29 @@
+{% extends "stocks/base.html" %}
+{% load i18n unit_tags %}
+
+
+{% block title %}
+    {% trans ingredient_term %} >
+    {% trans "Delete" %} ?
+{% endblock title %}
+
+
+{% block content %}
+    <form action="." method="POST">{% csrf_token %}
+        <div class="alert alert-danger">
+            <h4>
+                {% trans "Do you really, really want to remove this from your stock ?" %}
+            </h4>
+            <p>
+                {{ object.amount }}
+                {{ object }}
+            </p>
+            <hr>
+            <input class="btn btn-danger" type="submit" value="{% trans "Yes, delete this !" %}">
+            -
+            <a href="javascript:history.back();">{% trans "Cancel" %}</a>
+        </div>        
+    </form>
+
+{% endblock content %}
+

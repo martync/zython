@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% load i18n unit_tags %}
+
+
+{% block page %}
+    <div class="jumbotron jumbotron-nav">
+        <div class="container">
+            <h1>
+                {% block title %}
+                   {{ object }} <small>({{ object.guide }})</small>
+                {% endblock title %}
+            </h1>
+        </div>
+        <hr class="before-nav">
+        <div class="container">
+
+            <ul class="nav nav-pills" role="tablist">
+                <li>
+                    <a href="{% url "brew_style_list" %}">
+                        {% trans "Beer styles" %} >
+                    </a>
+                </li>
+                <li class="active"><a href="#">
+                    {{ object }}
+                </a></li>
+            </ul>
+        </div>
+    </div>
+    {{ block.super }}
+{% endblock page %}
+
+
+{% block content %}
+
+<div class="well">
+    <h4>{% trans "Description" %}</h4>
+    <p>{{ object.description|linebreaksbr }}</p>
+    <hr>
+    <h4>{% trans "Profile" %}</h4>
+    <p>{{ object.profile|linebreaksbr }}</p>
+    <hr>
+    <h4>{% trans "Ingredients" %}</h4>
+    <p>{{ object.ingredients|linebreaksbr }}</p>
+    <hr>
+    <h4>{% trans "Examples" %}</h4>
+    <p>{{ object.examples|linebreaksbr }}</p>
+</div>
+<p><br></p>
+<h2>{% trans "Ranges" %}</h2>
+
+<table class='table table-bordered'>
+    <thead>
+        <tr>
+            <th>{% trans "Data" %}</th>
+            <th style="width:210px;">{% trans "Min." %}</th>
+            <th style="width:210px;">{% trans "Max." %}</th>
+        </tr>
+    </thead>
+    <tr>
+        <td>{% trans "Original gravity" %}</td>
+        <td>{{ object.original_gravity_min }}</td>
+        <td>{{ object.original_gravity_max }}</td>
+    </tr>
+    <tr>
+        <td>{% trans "Final gravity" %}</td>
+        <td>{{ object.final_gravity_min }}</td>
+        <td>{{ object.final_gravity_max }}</td>
+    </tr>
+    <tr>
+        <td>{% trans "Bitterness" %}</td>
+        <td>{{ object.bitterness_min }} IBU</td>
+        <td>{{ object.bitterness_max }} IBU</td>
+    </tr>
+    <tr>
+        <td>{% trans "Color" %}</td>
+        <td>{% local_unit "color" object.color_min %}</td>
+        <td>{% local_unit "color" object.color_max %}</td>
+    </tr>
+    <tr>
+        <td>{% trans "Alcohol" %}</td>
+        <td>{{ object.alcohol_min }} °</td>
+        <td>{{ object.alcohol_max }} °</td>
+    </tr>
+</table>
+
+<p><br></p>
+
+<h2>{% trans "Recipes on Zython" %} <small>({{ related_recipes.count }})</small></h2>
+{% if related_recipes %}
+    <table class='table'>
+        {% for object in related_recipes %}
+            {% include "brew/recipe_list_row.html" %}
+        {% endfor %}
+    </table>
+{% else %}
+    {% trans "No recipe found... :(" %}    
+{% endif %}
+
+<p><br></p>
+
+<h2>{% trans "Styles in the same category" %}</h2>
+
+<ul>
+    {% for style in same_category_styles %}
+        <li><a href="{{ style.get_absolute_url }}">
+            {{ style.get_number }}
+            {{ style.name }}
+        </a></li>
+    {% endfor %}
+</ul>
+
+{% endblock content %}

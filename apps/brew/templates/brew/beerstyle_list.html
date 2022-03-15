@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load url from future %}
+{% load i18n %}
+
+
+{% block page %}
+    <div class="jumbotron jumbotron-nav">
+        <div class="container">
+            <h1>
+                {% block title %}
+                    {% trans "Beer styles" %} - BJCP 2008
+                {% endblock title %}
+            </h1>
+        </div>
+        <hr class="before-nav">
+        <div class="container">
+
+            <ul class="nav nav-pills" role="tablist">
+                <li class="active">
+                    <a href=".">
+                        {% trans "Beer styles" %}
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    {{ block.super }}
+{% endblock page %}
+
+
+{% block content %}
+
+<div class="well">
+    Section en anglais seulement actuellement.
+</div>
+
+<table class="table">
+    {% for style in object_list %}
+        {% ifchanged style.category %}
+            <p><br></p>
+            <h3>{{ style.number }} - {{ style.category }}</h3>
+        {% endifchanged %}
+        
+        <a href="{{ style.get_absolute_url }}">{{ style.get_number }} {{ style.name }}
+        </a><br>
+    {% endfor %}
+</table>
+
+{% endblock content %}

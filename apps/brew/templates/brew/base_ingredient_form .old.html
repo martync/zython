@@ -1,0 +1,37 @@
+{% load i18n %}
+
+<div id="form-container">
+    <div class="ingredient_list modal-max-height-body {% if request.POST or form.instance.id %}hide{% endif %}">
+
+        <div class="form-group has-feedback">
+            <input type="search" class="search_ingredient form-control" placeholder="{% trans "Search ingredient here..." %}" >
+            <span class="glyphicon glyphicon-search form-control-feedback"></span>
+        </div>
+
+        <table class="table table-bordered table-striped table-condensed table-sorted">
+            {% block table_content %}
+            {% endblock table_content %}
+        </table>
+    </div>
+
+    <div class="ingredient_form {% if not request.POST and not form.instance.id %}hide{% endif %}">
+        <form role="form" action="{{ request.path }}" method="POST" id="id_ingredient_form" class="form-horizontal">{% csrf_token %}
+            {% block form_content %}
+            {% endblock form_content %}
+        </form>
+    </div>
+</div>
+
+<style type="text/css">#id_notes{width:100%;height:80px;}</style>
+<script>
+$(function(){
+    $(".search_ingredient").quicksearch('.ingredient_list table tbody tr');
+    $('.ingredient_list table').dataTable({
+        "bPaginate": false, "bInfo": false, "bFilter": false, 
+        
+    }).addClass('table-sorted');
+});
+</script>
+
+{% block end_scripts %}
+{% endblock end_scripts %}

@@ -1,0 +1,110 @@
+{% extends "brew/base_ingredient_form.html" %}
+{% load i18n form_tags unit_tags %}
+
+
+{% block table_content %}
+    <thead>
+        <tr>
+            <th style="width:40px;" class='text-center'>#</th>
+            <th>{% trans "Name" %}</th>
+            <th>{% trans "Origin" %}</th>
+            <th>{% trans "Alpha" %}</th>
+            <th>{% trans "Beta" %}</th>
+            <th>{% trans "Type" %}</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for hop in form.get_ingredient_list %}
+        <tr class='row_ingredient' data-json-object='{{ hop.json_object }}'>
+            <td class='text-center'>
+                <a href="#" class='btn btn-success btn-xs add-this-ingredient'>
+                    <span class="glyphicon glyphicon-plus"></span>
+                </a>
+            </td>
+            <td>
+                {% if hop.stock_user == request.user %}
+                    <span class="text-success"><i class="fa fa-database"></i>
+                    ({% trans "In stock" %}
+                    {% local_unit "hop" hop.stock_amount 0 %})</span>
+                {% endif %}
+                {{ hop.name }}
+            </td>
+            <td>{{ hop.origin }}</td>
+            <td>{{ hop.acid_alpha }}</td>
+            <td>{{ hop.acid_beta }}</td>
+            <td>{{ hop.get_hop_type_display }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+{% endblock table_content %}
+
+
+{% block form_content %}
+    {% addFormField form.hop_id %}
+    {% addFormField form.name size="S" %}
+
+
+    <hr>
+
+
+    <div class="row">
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+            {% addFormField form.amount size="L" %}
+        </div>
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+            {% addFormField form.usage size="L" %}
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+            {% addFormField form.boil_time size="L" %}
+            {% addFormField form.dry_days size="L" %}
+        </div>
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+            {% addFormField form.form size="L" %}
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+            {% addFormField form.acid_alpha size="L" %}
+        </div>
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+            {% addFormField form.acid_beta size="L" %}
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+            {% addFormField form.origin size="L" %}
+        </div>
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+            {% addFormField form.hop_type size="L" %}
+        </div>
+    </div>
+
+    {% addFormField form.notes size="S" %}
+
+{% endblock form_content %}
+
+
+{% block end_scripts %}
+<script>
+$(function(){
+    $(".form-row-boil_time, .form-row-dry_days").hide();
+    $("#id_usage").change(function(){
+        if($(this).val() == "dryhop"){
+            $(".form-row-dry_days").show();
+            $(".form-row-boil_time").hide();
+        }else{
+            $(".form-row-dry_days").hide();
+            $(".form-row-boil_time").show();
+        }
+    }).change();
+});
+</script>
+{% endblock end_scripts %}

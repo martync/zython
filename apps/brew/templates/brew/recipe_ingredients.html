@@ -1,0 +1,152 @@
+{% load i18n unit_tags cache staticfiles %}
+{% load url from future %}
+
+
+{% if object.ingredients %}
+    
+<table class='table {% if page == "print" %}table-condensed{% endif %}'>
+<thead>
+    <tr>
+        <th>{% trans "Amount" %}</th>
+        <th>{% trans "Name" %}</th>
+        <th>{% trans "Type" %}</th>
+        <th>#</th>
+        <th>%/IBU</th>
+        {% if can_edit %}
+        <th class="action_col">{% trans "Actions" %}</th>
+        {% endif %}
+    </tr>
+</thead>
+<tbody>
+    {% for ing in object.ingredients %}
+
+        {% if "malt" in ing.cls_name %}
+            {# --- M A L T S --- #}
+            <tr>
+                <td>
+                    <img src="{% static "images/icon_grain.png" %}" alt="Grain icon">&nbsp;
+                    {% local_unit "weight" ing.amount 0 %}
+                </td>
+                <td>
+                    {% if can_edit %}
+                        {% if ing.malt.is_in_stock and page != "print" %}<span rel="tooltip" title="{% trans "In stock" %}" class="text-success"><i class="fa fa-database"></i></span>{% endif %}
+                        <a 
+                            class="fm-update"
+                            data-fm-head="{{ ing.name }}"
+                            data-fm-callback="reload"
+                            href="{% url "brew_recipe_editingredient" object.id "malt" ing.id %}">
+                    {% endif %}
+                    {{ ing.name }} ({% local_unit "color" ing.color %})
+                    {% if can_edit %}</a>{% endif %}
+                </td>
+                <td>{{ ing.get_malt_type_display }}</td>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ ing.percent }}%</td>
+                {% if can_edit %}
+                    <td><a class="confirm_delete" href="{% url "brew_recipe_removeingredient" object.id "malt" ing.id %}">{% trans "Delete" %}</a></td>
+                {% endif %}
+            </tr>
+            {# - - - - - - - - - #}
+        {% endif %}
+
+
+        {% if "hop" in ing.cls_name %}
+            {# --- H O P S --- #}
+            <tr>
+                <td>
+                    <img src="{% static "images/icon_hop.png" %}" alt="Hop icon">&nbsp;
+                    {% local_unit "hop" ing.amount 0 %}
+                </td>
+                <td>
+                    {% if can_edit %}
+                        {% if ing.hop.is_in_stock and page != "print" %}<span rel="tooltip" title="{% trans "In stock" %}" class="text-success"><i class="fa fa-database"></i></span>{% endif %}
+                        <a 
+                            class="fm-update"
+                            data-fm-head="{{ ing.name }}"
+                            data-fm-callback="reload"
+                            href="{% url "brew_recipe_editingredient" object.id "hop" ing.id %}">
+                    {% endif %}
+                    {{ ing.name }} ({{ ing.acid_alpha }}%) - {{ ing.get_usage_display }} {{ ing.unit_time }}
+                    {% if can_edit %}</a>{% endif %}
+                </td>
+                <td>{% trans "Hop" %}</td>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ ing.ibu|floatformat:1 }} IBU</td>
+                {% if can_edit %}
+                    <td><a class="confirm_delete" href="{% url "brew_recipe_removeingredient" object.id "hop" ing.id %}">{% trans "Delete" %}</a></td>
+                {% endif %}
+            </tr>
+            {# - - - - - - - - - #}
+        {% endif %}
+
+
+        {% if "misc" in ing.cls_name %}
+            {# --- M I S C S --- #}
+            <tr>
+                <td><img src="{% static "images/icon_misc.png" %}" alt="Misc icon">&nbsp;
+                    {% local_unit "hop" ing.amount 0 %}
+                </td>
+                <td>
+                    {% if can_edit %}
+                        <a 
+                            class="fm-update"
+                            data-fm-head="{{ ing.name }}"
+                            data-fm-callback="reload"
+                            href="{% url "brew_recipe_editingredient" object.id "misc" ing.id %}">
+                    {% endif %}
+                    {{ ing.name }} - {{ ing.get_use_in_display }} {{ ing.time }} {{ ing.time_unit }}
+                    {% if can_edit %}</a>{% endif %}
+                </td>
+                <td>{{ ing.get_misc_type_display }}</td>
+                <td>{{ forloop.counter }}</td>
+                <td>---</td>
+                {% if can_edit %}
+                    <td><a class="confirm_delete" href="{% url "brew_recipe_removeingredient" object.id "misc" ing.id %}">{% trans "Delete" %}</a></td>
+                {% endif %}
+            </tr>
+            {# - - - - - - - - - #}
+        {% endif %}
+
+
+        {% if "yeast" in ing.cls_name %}
+            {# --- Y E A S T S --- #}
+            <tr>
+                <td><img src="{% static "images/icon_yeast.png" %}" alt="Yeast icon">&nbsp;
+                    {% trans "Yeast" %}
+                </td>
+                <td>
+                    {% if can_edit %}
+                        {% if ing.yeast.is_in_stock and page != "print" %}<span rel="tooltip" title="{% trans "In stock" %}" class="text-success"><i class="fa fa-database"></i></span>{% endif %}
+
+                        <a 
+                            class="fm-update"
+                            data-fm-head="{{ ing.name }}"
+                            data-fm-callback="reload"
+                            href="{% url "brew_recipe_editingredient" object.id "yeast" ing.id %}">
+                    {% endif %}
+                    {{ ing.product_id }} {{ ing.name }} - {{ ing.laboratory }}
+                    {% if can_edit %}</a>{% endif %}
+                </td>
+                <td>{% trans "Yeast" %}</td>
+                <td>{{ forloop.counter }}</td>
+                <td>-</td>
+                {% if can_edit %}
+                    <td><a class="confirm_delete" href="{% url "brew_recipe_removeingredient" object.id "yeast" ing.id %}">{% trans "Delete" %}</a></td>
+                {% endif %}
+            </tr>
+            {# - - - - - - - - - #}
+        {% endif %}
+
+
+    {% endfor %}
+</tbody>
+</table>
+{% else %}
+    <div class="alert-box radius">
+        {% if can_edit %}
+            {% trans "There are no ingredients yet. Start adding some grain and see the magic happening." %}
+        {% else %}
+            {% trans "This beer looks empty :(" %}
+        {% endif %}
+    </div>
+{% endif %}

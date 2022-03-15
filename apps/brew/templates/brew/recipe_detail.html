@@ -1,0 +1,455 @@
+{% extends "base.html" %}
+{% load i18n unit_tags %}
+{% load static staticfiles %}
+{% load comments avatar_tags recipe_tags social_share %}
+{% load url from future %}
+
+
+{% block pre_title %}
+{{ object.name }} ({{ object.get_abv|floatformat:1 }}%), {{ object.user.username }}
+{% endblock pre_title %}
+
+{% block title %}
+{{ page }}
+{% endblock title %}
+
+
+{% block page_author %}{{ object.user.username }}{% endblock page_author %}
+
+
+{% block page %}
+<div class="jumbotron jumbotron-nav ">
+    <div class="container">
+        {% if object.get_ebc %}
+            <div id="gallery" data-toggle="modal-gallery" data-target="#modal-gallery" class="pull-right beer-preview">
+                <a data-toggle="lightbox" data-title="{{ object.name }} ({% local_unit "color" object.get_ebc %})" data-footer="{{ object.zython_advice_color }}" href="{% static "images/beer_colors/" %}{{ object.color_image }}.png">
+                    <img src="{% static "images/beer_colors_50/" %}{{ object.color_image }}.png" alt="{{ object.name }} beer color" style="width:50px;" width="50px" />
+                </a>
+            </div>
+        {% endif %}
+
+        <h1>{{ object.name }} 
+            {% if object.style %}
+                <small>
+                    <a href="{{ object.style.get_absolute_url }}">{{ object.style }}</a>
+                </small>
+            {% endif %}
+            {% if object.private %}<img src="{% static "images/fugue/lock.png" %}" alt="Private" class="tip" title="{% trans "This recipe is private" %}">{% endif %}
+        </h1>
+        <p><a href="{% url "brew_recipe_user" object.user.username %}">@{{ object.user.username }}</a> - {{ object.created|date }}</p>
+    </div>
+    <hr class="before-nav">
+    <div class="container">
+        <ul class="nav nav-pills" role="tablist">
+            <li {% if page == "detail" %}class="active"{% endif %}>
+                <a href="{{ object.get_absolute_url }}">
+                    <span class="glyphicon glyphicon-file"></span>
+                    {% trans "Recipe" %}
+                </a>
+            </li>
+            {% if can_edit %}
+                <li {% if page == "edit" %}class="active"{% endif %}>
+                    <a href="{% url "brew_recipe_edit" object.id object.slug_url %}">
+                        <span class="glyphicon glyphicon-pencil"></span>
+                        {% trans "Edit" %}
+                    </a>
+                </li>
+            {% endif %}
+
+            {% get_comment_count for object as comment_count %}
+            <li {% if page == "comments" %}class="active"{% endif %}>
+                <a href="{% url "brew_recipe_comments" object.pk object.slug_url %}">
+                    <span class="glyphicon glyphicon-comment"></span>
+                    {% trans "Comments" %} ({{ comment_count }})
+                </a>
+            </li>
+            {% if request.user.is_active %}
+                <li>
+                    <a class="fm-create" data-fm-head="{% trans "Clone" %}" data-fm-callback="trigger" href="{% url "brew_recipe_clone" object.pk object.slug_url %}">
+                        <span class="glyphicon glyphicon-floppy-open"></span>
+                        {% trans "Clone" %}
+                    </a>
+                </li>
+            {% endif %}
+            <li>
+                <a href="{% url "brew_recipe_print" object.pk object.slug_url %}" target="_blank">
+                    <span class="glyphicon glyphicon-print"></span>
+                    {% trans "Print" %}
+                </a>
+            </li>
+            {% if can_edit and request.user == object.user %}
+                <li {% if page == "permissions" %}class="active"{% endif %}>
+                    <a href="{% url "brew_recipe_permissions" object.pk object.slug_url %}">
+                        <span class="glyphicon glyphicon-eye-open"></span>
+                        {% trans "Permissions" %}
+                    </a>
+                </li>
+                <li {% if page == "delete" %}class="active"{% endif %}>
+                    <a href="{% url "brew_recipe_delete" object.id object.slug_url %}">
+                        <span class="glyphicon glyphicon-remove"></span>
+                        {% trans "Delete" %}
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+</div>
+{{ block.super }}
+{% endblock page %}
+
+
+
+{% block content %}
+
+{% block inner_content %}
+
+<div class="row">
+    <div class="col-xs-12 col-sm-8 col-md-9 col-lg-9">
+
+        {% if can_edit %}
+            <div class="btn-group pull-right">
+            {% if not object.recipemalt_set.all %}
+                <span class="popover-menu" tabindex="0" data-trigger="focus" type="button" data-container="body" title="{% trans "Let's begin" %}{#'"#}" data-toggle="popover" data-placement="left" data-content="{% trans "Start adding some malt here. Then hops etc..." %}."></span>                
+            {% endif %}
+              <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown">
+                {% trans "Add ingredient" %} <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu" role="menu">
+                <li>
+                    <a class="fm-create" data-fm-head="{% trans "Grain" %}" data-fm-callback="reload" href="{% url "brew_recipe_addingredient" recipe.id "malt" %}">
+                        <img src="{% static "images/icon_grain.png" %}" alt="Grain icon"> {% trans "Grain" %}
+                    </a>
+                </li>
+                <li>
+                    <a class="fm-create" data-fm-head="{% trans "Hop" %}" data-fm-callback="reload" href="{% url "brew_recipe_addingredient" recipe.id "hop" %}">
+                        <img src="{% static "images/icon_hop.png" %}" alt="Hop icon"> {% trans "Hop" %}
+                    </a>
+                </li>
+                <li>
+                    <a class="fm-create" data-fm-head="{% trans "Misc" %}" data-fm-callback="reload" href="{% url "brew_recipe_addingredient" recipe.id "misc" %}">
+                        <img src="{% static "images/icon_misc.png" %}" alt="Misc icon">&nbsp;{% trans "Misc" %}
+                    </a>
+                </li>
+                <li>
+                    <a class="fm-create" data-fm-head="{% trans "Yeast" %}" data-fm-callback="reload" href="{% url "brew_recipe_addingredient" recipe.id "yeast" %}">
+                        <img src="{% static "images/icon_yeast.png" %}" alt="Yeast icon">&nbsp;{% trans "Yeast" %}</a>
+                    </li>
+              </ul>
+            </div>
+            
+        {% endif %}
+
+        <h2>{% trans "Ingredients" %}</h2>
+        {% include "brew/recipe_ingredients.html" %}
+        <hr>
+
+        {% if can_edit %}
+            <div class="pull-right">
+                {% if object.recipemalt_set.all and object.recipehop_set.all and not object.mashstep_set.all %}
+                    <span class="popover-menu" tabindex="0" data-trigger="focus" type="button" data-container="body" title="{% trans "Don't forget your mashsteps" %}" data-toggle="popover" data-placement="left" data-content="{% trans "When your recipe will look delicious, don't forget to add your mashstep." %}." ></span>                
+                {% endif %}
+
+                <a 
+                    class="fm-create btn btn-primary btn-sm"
+                    data-fm-head="{% trans "Add mash step" %}"
+                    data-fm-callback="reload"
+                    href="{% url "brew_mash_add" object.id %}">
+                    {% trans "Add mash step" %} <span class="glyphicon glyphicon-plus"></span>
+                </a>
+            </div>
+        {% endif %}
+
+        <h2>{% trans "Mash detail" %}</h2>
+        {% include "brew/recipe_mashsteps.html" %}
+    </div>
+
+    <div id="right-panels" class="col-xs-12 col-sm-4 col-md-3 col-lg-3">
+
+        {% if object.has_stock_ingredients %}
+            <a
+                class="fm-update btn btn-block btn-success {% if object.last_destock_datetime %}disabled{% endif %}"
+                data-fm-head="{% trans "Destock" %}"
+                data-fm-callback="trigger" 
+                href="{% url "brew_recipe_destock" object.pk object.slug_url %}">{% trans "Destock" %} <i class="fa fa-database"></i> <i class="fa fa-share"></i></a>
+                
+            {% if object.last_destock_datetime %}
+                <p class="text-muted small text-center">
+                    {% trans "Last destock date :" %}
+                    <strong>{{ object.last_destock_datetime }}</strong>
+                </p>
+            {% endif %}
+            <hr>
+        {% endif %}
+
+        <div class="panel panel-primary">
+              <div class="panel-heading">
+                    <h3 class="panel-title">
+                    <i class="glyphicon glyphicon-tasks"></i>
+                    {% trans "Indicators" %}</h3>
+              </div>
+              <div class="panel-body">
+                <b>{{ object.get_recipe_type_display }}</b> - 
+                {% trans "Batch size" %} : <b>{% local_unit "volume" object.batch_size 0 %}</b>
+
+                <hr>
+                
+                <div
+                {% if not object.recipemalt_set.all %}
+                     class="empty_indicator"
+                {% endif %}
+                >
+                
+                
+                    <p class="indicator_range">
+                        <b>{% trans "Est. original gravity" %}</b>: {{ object.get_original_gravity }}<br>
+                        <input type="range" 
+                            class="indicatorRange"
+                            min="{{ object.style.original_gravity_min|rangeable }}"
+                            max="{{ object.style.original_gravity_max|rangeable }}"
+                            value="{{ object.get_original_gravity|rangeable }}"
+                            disabled="disabled" />
+                        <span class="pull-left mark-indicator">
+                            {{ object.style.original_gravity_min }}
+                        </span>
+                        <span class="pull-right mark-indicator">
+                            {{ object.style.original_gravity_max }}
+                        </span>
+                    </p>
+
+                    <p class="indicator_range">
+                        <b>{% trans "Est. final gravity" %}</b>: {{ object.get_final_gravity }}<br>
+                        <input type="range" 
+                            class="indicatorRange"
+                            min="{{ object.style.final_gravity_min|rangeable }}"
+                            max="{{ object.style.final_gravity_max|rangeable }}"
+                            value="{{ object.get_final_gravity|rangeable }}"
+                            disabled="disabled" />
+                        <span class="pull-left mark-indicator">
+                            {{ object.style.final_gravity_min }}
+                        </span>
+                        <span class="pull-right mark-indicator">
+                            {{ object.style.final_gravity_max }}
+                        </span>
+                    </p>
+
+                    <p class="indicator_range">
+                        <b>{% trans "IBU" %}</b>: {{ object.get_ibu }}<br>
+                        <input type="range" 
+                            class="indicatorRange"
+                            min="{{ object.style.bitterness_min|rangeable }}"
+                            max="{{ object.style.bitterness_max|rangeable }}"
+                            value="{{ object.get_ibu|rangeable }}"
+                            disabled="disabled" />
+                        <span class="pull-left mark-indicator">
+                            {{ object.style.bitterness_min }}
+                        </span>
+                        <span class="pull-right mark-indicator">
+                            {{ object.style.bitterness_max }}
+                        </span>
+                    </p>
+
+                    <p class="indicator_range">
+                        <b>{% trans "Color" %}</b>: {% local_unit "color" object.get_ebc %}<br>
+                        <input type="range" 
+                            class="indicatorRange"
+                            min="{{ object.style.color_min|rangeable }}"
+                            max="{{ object.style.color_max|rangeable }}"
+                            value="{{ object.get_ebc|rangeable }}"
+                            disabled="disabled" />
+                        <span class="pull-left mark-indicator">
+                            {{ object.style.color_min }}
+                        </span>
+                        <span class="pull-right mark-indicator">
+                            {{ object.style.color_max }}
+                        </span>
+                    </p>
+
+                    <p class="indicator_range">
+                        <b>{% trans "ABV" %}</b>: {{ object.get_abv|floatformat:1 }}%<br>
+                        <input type="range" 
+                            class="indicatorRange"
+                            min="{{ object.style.alcohol_min|rangeable }}"
+                            max="{{ object.style.alcohol_max|rangeable }}"
+                            value="{{ object.get_abv|rangeable }}"
+                            disabled="disabled" />
+                        <span class="pull-left mark-indicator">
+                            {{ object.style.alcohol_min }}
+                        </span>
+                        <span class="pull-right mark-indicator">
+                            {{ object.style.alcohol_max }}
+                        </span>
+                    </p>
+                </div>
+
+              </div>
+        </div>
+
+        <div class="panel panel-primary">
+                <div class="panel-heading">
+                        <h3 class="panel-title">
+                        <a data-toggle="collapse"
+                           data-parent="#right-panels"
+                           href="#efficiency-form-collapse">
+                        <i class="glyphicon glyphicon-cog"></i>
+                        {% trans "Efficiency calculator" %}</h3>
+                      </a>
+                </div>
+              <div id="efficiency-form-collapse"
+                   class="panel-collapse collapse">
+              <div class="panel-body">
+
+                <form method="POST" id="efficiency-calc-form">
+                  {% csrf_token %}
+                  {% for field in calculator_form %}
+                      <div>
+                      {{ field.label_tag }} <br>
+                      {{ field }}
+                      </div>
+                  {% endfor %}
+                  <button class="btn btn-success" type="submit" value="{% trans "Update" %}">
+                    <span class="glyphicon glyphicon-refresh"></span>
+                  </button>
+                </form>
+                <div>
+                  <b>
+                    <span id="efficiency-calc-form-result"></span>
+                    %
+                  </b>
+                </div>
+              </div>
+            </div>
+        </div>
+
+        {% if object.mashstep_set.all %}
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                        <h3 class="panel-title">{% trans "Mash steps" %}</h3>
+                  </div>
+                  <div class="panel-body">
+                        <div id="placeholder" class="mash-graph"></div>
+                  </div>
+            </div>
+        {% endif %}
+
+
+        {% if object.forked_from %}
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                    <i class="glyphicon glyphicon-floppy-save"></i>
+                    {% trans "Clonée à partir de" %}</h3>
+                </div>
+                <div class="panel-body">
+                    <a href="{{ object.forked_from.get_absolute_url }}">{{ object.forked_from }}</a> <br>
+                    de <a href="{{ object.forked_from.user.get_absolute_url }}">@{{ object.forked_from.user.username }}</a> <br>
+
+                </div>
+            </div>
+        {% endif %}
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <span class="glyphicon glyphicon-share"></span>
+                    {% trans "Share this recipe" %}
+                </h3>
+            </div>
+            <div class="panel-body">
+                    {% post_to_facebook object "Facebook" %}
+                    {% post_to_twitter object.title object "Twitter" %}
+                    <a href="{% url "brew_recipe_text" object.pk object.slug_url %}" rel="tooltip" title="{% trans "Copy (txt)" %}" target="_blank" style="font-size:24px">
+                        <span class="glyphicon glyphicon-list"></span>
+                    </a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<p><hr></p>
+
+{% endblock inner_content %}
+
+{% endblock content %}
+
+
+
+
+
+
+{% block js %}
+
+{% if can_edit %}
+<script type="text/javascript" src="{% static "js/jquery.quicksearch.js" %}"></script>
+<script type="text/javascript" src="{% static "js/jquery.form.js" %}"></script>
+<script type="text/javascript" src="{% static "js/jquery.dataTables.min.js" %}"></script>
+<script type="text/javascript">
+$(function() {
+    $(".popover-menu").popover('show');
+    $(".btn, a").on("click", function(){$(".popover-menu").popover('hide');});
+    $(document).on("click", ".add-this-ingredient", function(){
+        json_object = jQuery.parseJSON($(this).parent().parent().attr("data-json-object"));
+        populate($("#id_ingredient_form"), json_object[0]["fields"]);
+        $(".ingredient_list").fadeOut(function(){
+            $(".ingredient_form").removeClass("hide");
+            $(".ingredient_form input").filter(':visible:first').focus();
+        });
+    });
+});
+</script>
+{% endif %}
+<script type="text/javascript">
+$(function() {
+  $("#efficiency-calc-form").submit(function(e) {
+
+      $.ajax({
+        type:"POST",
+        data: $("#efficiency-calc-form").serialize(),
+        url:"{% url 'brew_recipe_efficiency_calculator' object.id object.slug_url %}",
+        success: function(data) {
+          $("#efficiency-calc-form-result").text(data.efficiency);
+        }
+      });
+      e.preventDefault();
+    });
+});
+</script>
+
+{% if object.mashstep_set.all and page == "detail" %}
+    <script type="text/javascript">
+    $(function() {
+        minutes_array = Array();
+        for (var i=0 ; i < {{ object.get_total_mash_time }} + 1; i++) {minutes_array.push(i)};
+        var datas = {{ object.get_mash_schedule }};
+        $.plot("#placeholder", [ minutes_array, datas], {
+            yaxis: {
+                tickFormatter: function (v) {return v + " °C";}
+            },
+            xaxis: {
+                tickFormatter: function (v) {return v + " min";}
+            },
+            grid: {
+                backgroundColor: "#fff",
+                borderColor: "#DDD"
+            },
+            series: {
+                lines: { show: true, fill: true, fillColor: "rgba(49, 85, 141, 0.1)", lineWidth: 1 },
+            },
+            colors: ["#31558d"],
+        });
+    });
+    </script>    
+{% endif %}
+{% endblock js %}
+
+
+{% block extrahead %}
+<style type="text/css">
+.error_frame{
+    text-align:left;
+}
+.inline_field input[type="text"]{width:30px;}
+.inline_field select{width:80px}
+#id_comment{height:70px;width:500px;}
+</style>
+{% endblock extrahead %}

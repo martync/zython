@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% load i18n static fm_tags %}
+
+
+{% block page %}
+    <div class="jumbotron jumbotron-nav">
+        <div class="container">
+            {% block jumbotron %}{% endblock jumbotron %}
+            <h1>
+                <i class="fa fa-database"></i>
+                {% block title %}{% trans "My stock" %}{% endblock title %}
+            </h1>
+        </div>
+        <hr class="before-nav">
+        <div class="container">
+            <ul class="nav nav-pills">
+                {% for ingd, term in ingredients_dict.items %}
+                    <li role="presentation" {% if ingd in request.path %} class="active"{% endif %}>
+                      <a href="{% url "stock_ingredient" ingd %}">{% trans term %}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    {{ block.super }}
+    {% include "fm/modal.html" %}
+{% endblock page %}
+
+
+{% block js %}
+<script type="text/javascript" src="{% static "fm/js/fm.js" %}?v={% fm_version %}"></script>
+<script src="{% static "js/stocks.js" %}"></script>
+
+{% endblock js %}

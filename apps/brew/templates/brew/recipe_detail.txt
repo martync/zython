@@ -1,0 +1,24 @@
+{% load i18n unit_tags recipe_tags %}{{ object.name }}
+------------
+{% trans "Brewer" %}: {{ object.user.username }}
+{% trans "Batch size" %}: {% local_unit "volume" object.batch_size 0 %}
+{% trans "Type" %}: {{ object.get_recipe_type_display }}
+{% if object.style %}{% trans "Style" %}: {{ object.style }}{% endif %}
+
+
+{% trans "Beer profile" %}
+------------
+{% trans "Original gravity" %}: {{ object.get_original_gravity }}
+{% trans "Final gravity" %}: {{ object.get_final_gravity }}
+{% trans "ABV" %}: {{ object.get_abv|floatformat }}%
+{% trans "IBU" %}: {{ object.get_ibu|floatformat }}%
+
+
+{% trans "Ingredients" %}
+------------
+{% recipe_ingredients_txt object %}
+
+{% trans "Mash steps" %}
+------------
+{% recipe_mashsteps_txt object %}
+{% trans "Fly sparge with" %} {% local_unit "volume" object.water_sparge 0 %} {% trans "of water at" %} {% local_unit "temperature" 78 0 %}

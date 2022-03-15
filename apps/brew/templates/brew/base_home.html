@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load i18n avatar_tags %}
+{% load url from future %}
+
+
+{% block page %}
+    <div class="jumbotron jumbotron-nav">
+        <div class="container">
+            <h1>
+                {% block page_title %}
+                {% endblock page_title %}
+            </h1>
+        </div>
+        <hr class="before-nav">
+        <div class="container">
+            <ul class="nav nav-pills">
+                <li role="presentation"><a href="/">{% trans "All recipes" %}</a></li>
+                <li role="presentation"><a href="{% url "brew_recipe_users" %}">{% trans "By user" %}</a></li>
+                <li role="presentation"><a href="{% url "brew_recipe_styles" %}">{% trans "By style" %}</a></li>
+            </ul>
+        </div>
+    </div>
+    {{ block.super }}
+{% endblock page %}
+
+
+{% block content %}
+
+{% block page_content %}
+{% endblock page_content %}
+
+{% endblock content %}

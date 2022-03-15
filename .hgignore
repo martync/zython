@@ -1,0 +1,17 @@
+syntax: glob
+*.pyc
+*~
+*.tmpl
+*.tmproj
+*.orig
+.DS_Store
+.directory
+.hg/
+*local_settings.py
+medias/avatars
+zython.sql
+cache/
+medias/css/less/
+projects/dev/zython.sql
+.bumpversion.cfg
+tasks.py

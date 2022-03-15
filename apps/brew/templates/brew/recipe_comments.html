@@ -1,0 +1,95 @@
+{% extends "brew/recipe_detail.html" %}
+{% load comments avatar_tags i18n %}
+{% load url from future %}
+
+
+{% block inner_content %}
+<div class="row">
+    <div class="col-xs-7 col-sm-7 col-md-7 col-lg-7">
+        <h2>{% trans "Comments" %}</h2>
+        {% get_comment_list for object as comment_list %}
+        {% for comment in comment_list reversed %}
+            <div class="well {% if object.user != comment.user %}well_light{% endif %}">
+                <p class='small'>
+                    <a href="{% url "brew_recipe_user" comment.user.username %}" class="nolink"><b>{{ comment.user.username }}</b></a>
+                    {{ comment.submit_date|date }}
+
+                    {% if comment.user == request.user %}
+                        <a href="#" class="comment-delete nolink" data-url="{% url "comment-delete" comment.id %}">{% trans "Delete" %}</a>
+                    {% endif %}
+                    </p>
+                <div class="row">
+                    <div class="col-xs-4 col-sm-4 col-md-3 col-lg-2">
+                        {% avatar comment.user 60 %}
+                    </div>
+
+                    <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+                        <p>{{ comment.comment|linebreaksbr }}</p>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="alert">{% trans "No comment" %} :(</div>
+        {% endfor %}
+    </div>
+    <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+        <h2>{% trans "Comment this recipe" %}</h2>
+        {% if request.user.is_authenticated %}
+            {% get_comment_form for object as form %}
+              <form action="{% comment_form_target %}" method="post" class='form'>{% csrf_token %}
+                {% for field in form %}
+                    {% if field.name == "comment" %}
+                    <div class="control-group {% if field.errors %}error{% endif %}">
+                        <div class="controls">
+                            {{ field }}
+                            {% if field.help_text %}
+                                <span class="help-inline">{{ field.help_text }}</span>
+                            {% endif %}
+                            {{ field.errors }}
+                        </div>
+                    </div>
+                    {% else %}
+                        <div style="display:none;">{{ field }}</div>
+                    {% endif %}
+                {% endfor %}
+                <input type="submit" class='btn btn-success' value="{% trans "Send" %}">
+                <input type="hidden" name="next" value="{{ request.path }}">
+              </form>
+        {% else %}
+            <div class="alert">
+                {% trans "You have to log in to comment this recipe" %}. 
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+{% if request.user.is_active %}
+<form action="." method="POST" id="comment-delete-form">{% csrf_token %}
+    <input type="hidden" name="next" value="{{ request.get_full_path }}">
+</form>
+{% endif %}
+<div class="vspace"></div>
+<div class="vspace"></div>
+<div class="vspace"></div>
+{% endblock inner_content %}
+
+
+
+{% block extrahead %}
+<style type="text/css">#id_comment{width:95%;height:117px;}</style>
+{% endblock extrahead %}
+
+{% block js %}
+<script type="text/javascript">
+$(function(){
+    $('.comment-delete').click(function(){
+        if(confirm("{% trans "Delete this comment ?" %}")){
+            url = $(this).attr('data-url');
+            $("#comment-delete-form").attr("action", url).submit();
+        }
+    })
+});
+
+</script>
+{% endblock js %}
+

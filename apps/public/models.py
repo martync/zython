@@ -1,0 +1,1 @@
+# Tell django it's a django app

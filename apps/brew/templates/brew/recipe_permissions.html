@@ -1,0 +1,52 @@
+{% extends "brew/recipe_detail.html" %}
+{% load i18n guardian_tags %}
+{% load url from future %}
+
+
+{% block inner_content %}
+    <h2>{% trans "Permissions" %}</h2>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>{% trans "Username" %}</th>
+                <th>{% trans "Can view" %}</th>
+                <th>{% trans "Can change" %}</th>
+            </tr>
+        </thead>
+        {% for user in user_perms %}
+            {% get_obj_perms user for object as "perms" %}
+            <tr>
+                <td>{{ user }}</td>
+                <td>
+                    {% if "view_recipe" in perms %}
+                        {% trans "OUI" %}
+                    {% else %}
+                        {% trans "NON" %}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if "change_recipe" in perms %}
+                        {% trans "OUI" %}
+                    {% else %}
+                        {% trans "NON" %}
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    <div class="well">
+        <h4>Set permission</h4>
+        <form action="{% url "brew_recipe_setperms" object.id object.slug_url %}" method="POST" class="form-inline">{% csrf_token %}
+            <input name="username" placeholder="Username" />
+            <select name="perms" id="">
+                <option value="">{% trans "No permissions" %}</option>
+                {% if object.private %}
+                    <option value="view_recipe">{% trans "View this recipe" %}</option>
+                {% endif %}
+                <option value="view_recipe|change_recipe">{% trans "View and change this recipe" %}</option>
+            </select>
+            <input type="submit" value="{% trans "Add" %}" class='btn'>
+        </form>
+    </div>
+{% endblock inner_content %}

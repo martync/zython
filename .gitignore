@@ -1,0 +1,11 @@
+.DS_Store
+*.pyc
+.idea
+dump.rdb
+*.orig
+
+db.sqlite3
+.venv
+static
+.direnv
+

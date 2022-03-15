@@ -1,0 +1,101 @@
+{% extends "brew/base_home.html" %}
+{% load i18n avatar_tags %}
+{% load url from future %}
+
+
+{% block title %}
+{% if user_recipe %}
+	{% blocktrans with user_recipe.username as name%}{{ name }} recipes{% endblocktrans %}
+{% else %}
+	{% trans "Your beer recipe online, for homebrewer" %}
+{% endif %}
+{% endblock title %}
+
+
+{% block page %}
+
+	{% if request.user.is_anonymous and not user_recipe and not request.GET.q %}
+		<div class="jumbotron welcome">
+			<div class="text-center">
+				<h1>Zython.me <small>- A free beer recipe app - 
+					<a href="https://www.facebook.com/Zython" target="_blank"><span class="text-zython-5"><i class="fa fa-facebook-square"></i></span></a>
+					<a href="https://twitter.com/zythonme" target="_blank"><span class="text-zython-5"><i class="fa fa-twitter-square"></i></span></a>
+
+				</small></h1>
+			</div>
+
+			<div class="row">
+				<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 text-center">
+					{% blocktrans %}
+          
+          <h5><i class="fa fa-unlock-alt"></i><br>Create public or private recipe</h5>
+
+          Keep your recipe just for you  <br>or share it with the world
+          {% endblocktrans %}
+				</div>
+				<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 text-center">
+					{% blocktrans %}
+          <h5><i class="fa fa-database"></i><br>Manage your stock online</h5>
+           Add your custom ingredients, <br>Zython will take care of your stock easily.
+          {% endblocktrans %}
+				</div>
+				<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 text-center">
+					{% blocktrans %}
+          <h5><i class="fa fa-code-fork"></i><br>Comment, clone, share, print</h5>
+           Simple tools to help you sharing. <br>
+           You can also clone any recipe.
+          {% endblocktrans %}
+				</div>
+			</div>
+			<div class="vspace-xl"></div>
+			<div class="row">
+				<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 text-center">
+					{% blocktrans %}
+          <h5><i class="fa fa-calculator"></i><br>Your unit</h5>
+          Lbs, kg, EBC, SRM, g, oz <br>
+          No problem, Zython handles this
+          {% endblocktrans %}
+				</div>
+				<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 text-center">
+					{% blocktrans %}
+          <h5><i class="fa fa-cutlery"></i><br>Adapt for your equipement</h5>
+          Specify deadspaces, evaporation rate, <br>
+          Zython will adapt your recipe
+          {% endblocktrans %}
+				</div>
+				<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 text-center">
+					{% blocktrans %}
+          <h5><i class="fa fa-file-code-o"></i><br>BeerXml format</h5>
+          You can import your recipe in <br>BeerXML format
+          {% endblocktrans %}
+				</div>
+			</div>
+		
+		<div class="vspace-xl"></div>
+		<hr>
+		<div class="vspace-xl"></div>
+		<div class="text-center">
+			<a href="/account/signup/" class="btn btn-success btn-lg">{% trans "Create my account" %}</a> <br>
+			<small class="text-muted">{% trans "Of course it's free" %}</small>
+		</div>
+
+		</div>
+	{% endif %}
+
+	{{ block.super }}
+{% endblock page %}
+
+
+{% block page_title %}
+    {% if user_recipe %}
+        {% blocktrans with user_recipe.username as name%}{{ name }} recipes{% endblocktrans %}
+    {% else %}
+        {% trans "Last recipes" %}
+    {% endif %}
+{% endblock page_title %}
+
+
+
+{% block page_content %}
+    {% include "brew/recipe_list.part.html" %}
+{% endblock page_content %}

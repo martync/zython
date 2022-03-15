@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load i18n avatar_tags %}
+
+{% block content %}
+    
+    {% if not avatars %}
+        <p>{% trans "You do not yet have an avatar.  Please upload one now." %}</p>
+    {% else %}
+
+        <div class="pull-right">
+            <p>{% trans "Your current avatar" %}: </p>
+            {% avatar user %}
+        </div>
+        <h2>{% trans "Your avatars" %}</h2> <br>
+        <form class="choose-avatar" method="POST" action="">{% csrf_token %}
+            {{ primary_avatar_form.choice }}
+            <input type="submit" value="{% trans "Choose new Default" %}" class='btn'/>
+        </form>
+    {% endif %}
+    <p> <br>
+        <hr><br>
+    </p>
+    <h2>{% trans "Add a new avatar" %}</h2><br>
+
+    <form enctype="multipart/form-data" method="POST" action="{% url "avatar_add" %}">{% csrf_token %}
+        <input type="file" name="avatar" value="{% trans "Avatar Image" %}" />
+        <input type="submit" class='btn' value="{% trans "Upload New Image" %}" />
+    </form>
+    <p><br></p>
+    <hr>
+    <a href="{% url "avatar_delete" %}">{% trans "Delete my avatars" %}</a>
+
+{% endblock content %}
+
+
+{% block extrahead %}
+<style type="text/css">
+form.choose-avatar li {list-style:none}
+form.choose-avatar li label input{
+    float:left;
+    margin-top:32px;
+    margin-right:10px;
+}
+</style>
+{% endblock extrahead %}

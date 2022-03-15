@@ -1,0 +1,72 @@
+{% load i18n unit_tags %}
+
+<form action="{{ request.path }}" method="POST" id="id_ingredient_form" class="form-horizontal">{% csrf_token %}
+    <div class="well">
+        {% trans "After you click [OK], your stock will be adjusted. " %}
+    </div>
+    
+    <table class="table">
+        <thead>
+            <tr>
+                <th>{% trans "Ingredient" %}</th>
+                <th class="text-right">{% trans "Initial stock" %}</th>
+                <th class="text-right">{% trans "Used quantity" %}</th>
+                <th class="text-right">{% trans "Remaining stock" %}</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for ingredient_type, datas in ingredients.items %}
+            {% for ingredient in datas %}
+                <tr class="{{ ingredient.errors|yesno:"danger," }}">
+                    <td>
+                        {{ ingredient.object }}
+                        {% if ingredient.errors == True %}
+                            <br>
+                            <span class="text-danger">({% trans "Your stock isn't suffisent, you can go still ahead at your own risk." %})</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-right">
+                        {% if ingredient_type == "hops" %}
+                            {% local_unit "hop" ingredient.initial_amount 0 %}
+                        {% endif %}
+
+                        {% if ingredient_type == "malts" %}
+                            {% local_unit "weight" ingredient.initial_amount 0 %}
+                        {% endif %}
+
+                        {% if ingredient_type == "yeasts" %}
+                            {{ ingredient.initial_amount }}
+                        {% endif %}
+                    </td>
+                    <td class="text-right">
+                        {% if ingredient_type == "hops" %}
+                            -{% local_unit "hop" ingredient.used_amount 0 %}
+                        {% endif %}
+
+                        {% if ingredient_type == "malts" %}
+                            -{% local_unit "weight" ingredient.used_amount 0 %}
+                        {% endif %}
+
+                        {% if ingredient_type == "yeasts" %}
+                            -{{ ingredient.used_amount }}
+                        {% endif %}
+                    </td>
+                    <td class="text-right">
+                        {% if ingredient_type == "hops" %}
+                            {% local_unit "hop" ingredient.remaining_amount 0 %}
+                        {% endif %}
+
+                        {% if ingredient_type == "malts" %}
+                            {% local_unit "weight" ingredient.remaining_amount 0 %}
+                        {% endif %}
+
+                        {% if ingredient_type == "yeasts" %}
+                            {{ ingredient.remaining_amount }}
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        {% endfor %}
+        </tbody>
+    </table>
+</form>

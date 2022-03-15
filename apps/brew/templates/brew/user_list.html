@@ -1,0 +1,36 @@
+{% extends "brew/base_home.html" %}
+{% load i18n %}
+
+
+{% block title %}
+    {% trans "All beer recipes by user" %}
+{% endblock title %}
+
+
+{% block page_title %}
+    {% trans "By user" %}    
+{% endblock page_title %}
+
+
+{% block page_content %}
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>{% trans "User" %}</th>
+                <th>{% trans "Date joined" %}</th>
+                <th>{% trans "Recipes" %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for object in object_list %}
+                <tr>
+                    <td><a href="{% url "brew_recipe_user" object.username %}">{{ object.username }}</a></td>
+                    <td>{{ object.date_joined|date:"d b Y" }}</td>
+                    <td>{{ object.recipe_set.all.count }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock page_content %}

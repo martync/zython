@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+
+{% block page %}
+    <div class="jumbotron">
+        <div class="container">
+            <h1>
+                {% block title %}
+                   Calculator <small>- {% trans "Quickly get the ABV, IBU, Color, life prediction, horoscope etc..." %}</small>
+                {% endblock title %}
+            </h1>
+        </div>
+    </div>
+    {{ block.super }}
+{% endblock page %}
+
+
+{% block content %}
+    <div class="row" id="forms"></div>
+{% endblock content %}
+
+
+{% block js %}
+<script>
+$(function(){
+    {% for form in form_urls %}
+        url = "{{ form.1 }}";
+        $("#forms").append('<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"><div class="panel panel-primary calculator-panel" id="id_panel_{{ form.0 }}"><div class="panel-heading"><h3 class="panel-title">{{ form.2 }}</h3></div><div class="panel-body"id="id_panelbody_{{ form.0 }}"></div></div></div>');
+        $.get(url, function(datas){
+            $("#id_panelbody_{{ form.0 }}").html(datas)
+        });
+    {% endfor %}
+
+    $(document).on("submit", ".calculator-panel form", function(){
+        url = $(this).attr("action");
+        datas = $(this).serialize();
+        container = $(this).parent();
+
+        $.post(url, datas, function(html){
+            container.html(html);
+
+        });
+
+        return false;
+    })
+});
+</script>
+{% endblock js %}
