@@ -59,6 +59,7 @@ INSTALLED_APPS = (
     'public',
     'brew',
     'units',
+    'dj_pagination',
     'stocks',
     'guardian',
     'crispy_forms',
@@ -76,14 +77,18 @@ MIDDLEWARE = (
     'django.middleware.locale.LocaleMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    "account.middleware.TimezoneMiddleware",
+    'account.middleware.TimezoneMiddleware',
+    'dj_pagination.middleware.PaginationMiddleware',
+
 )
 
-DEFAULT_AUTO_FIELD = 'django.db.models.AutoField' 
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 ROOT_URLCONF = 'zython.urls'
 LOGIN_URL = '/account/login/'
 WSGI_APPLICATION = 'zython.wsgi.application'
 
+EMAIL_HOST = "127.0.0.1"
+EMAIL_PORT = 1025
 
 TEMPLATES = [
     {

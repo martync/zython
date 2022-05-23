@@ -7,7 +7,11 @@ from public.utils import show_in_browser
 from public.utils.testing import AjaxCallsTestCaseBase
 import json
 
+
 class RecipeTest(AjaxCallsTestCaseBase, TestCase):
+    fixtures = [
+        "initial_data.json"
+    ]
     user_info = {'username': 'martyn',
                  'password': 'magicpony',
                  'email': 'martyn@example.com'}

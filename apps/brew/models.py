@@ -10,6 +10,7 @@ from django_comments.signals import comment_was_posted
 from django.contrib.contenttypes.models import ContentType
 from django.conf import settings
 from django.core.cache import cache
+from django.template.loader import render_to_string
 from django.utils.text import slugify
 from django.urls import reverse
 from public.helpers import send_email_html
@@ -84,11 +85,11 @@ class BeerStyle(models.Model):
     def get_number(self):
         return "%s.%s" % (self.number, self.sub_number)
 
-    def __unicode__(self):
+    def __str__(self):
         return "%s - %s" % (self.get_number(), self.name)
 
     def get_absolute_url(self):
-        return reverse('brew_style_detail', args=(str(self.id)))
+        return reverse('brew_style_detail', args=[self.id])
 
     def og_range(self):
         return [self.original_gravity_min, self.original_gravity_max]
@@ -250,7 +251,7 @@ class Recipe(models.Model):
         modified = self.modified or datetime.now()
         return "%s_%s" % (self.id, modified.strftime('%Y%m%d%H%M%S%f'))
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     def get_absolute_url(self):
@@ -569,6 +570,13 @@ class Recipe(models.Model):
         if self.get_stocked_recipeyeasts():
             return True
         return False
+
+    def get_as_text(self, extra_context=None):
+        context = {"object": self}
+        if extra_context:
+            context.update(extra_context)
+        return render_to_string("brew/recipe_detail.txt", context)
+
 
 
 class Malt(BaseStockModel, BaseMalt):

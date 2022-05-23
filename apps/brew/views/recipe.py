@@ -1,3 +1,6 @@
+import io
+import zipfile
+
 from django import http
 from django.utils.translation import ugettext_lazy as _
 from django.contrib import messages
@@ -22,7 +25,7 @@ from ..helpers import import_beer_xml
 __all__ = (
     "RecipeListView", "UserRecipeListView", "UserListView", "RecipeCreateView", "RecipeImportView",
     "RecipeDetailView", "RecipeDeleteView", "RecipeUpdateView", "RecipeCloneView", "RecipeEfficiencyCalculatorView",
-    "set_user_perm"
+    "RecipeExportView", "set_user_perm"
 )
 
 
@@ -93,6 +96,32 @@ class RecipeCreateView(LoginRequiredMixin, UnitViewFormMixin, CreateView):
         return initial
 
 
+class RecipeExportView(UserListView):
+    template_name = "brew/recipe_export.html"
+
+    def get(self, request, *args, **kwargs):
+        if request.GET.get("format") == "pdf":
+            return self.download_pdf(request)
+        return super(RecipeExportView, self).get(request, *args, **kwargs)
+
+    def download_pdf(self, request):
+        user = request.user
+        b = io.BytesIO()
+        zf = zipfile.ZipFile(b, mode='w')
+
+        qs = Recipe.objects.filter(user=user).select_related('user', 'style')
+        for q in qs:
+            recipe_txt = q.get_as_text(extra_context={"request": request})
+            zf.writestr('{}.txt'.format(q.slug_url), recipe_txt)
+
+        zf.close()
+        response = http.HttpResponse(b.getbuffer())
+        response['Content-Type'] = 'application/x-zip-compressed'
+        response['Content-Disposition'] = 'attachment; filename=zython-recipes-{}.zip'.format(user.username)
+        return response
+
+
+
 class RecipeImportView(LoginRequiredMixin, FormView):
     form_class = RecipeImportForm
     template_name = "brew/recipe_import_form.html"
@@ -119,7 +148,10 @@ class RecipeDetailView(RecipeSlugUrlMixin, RecipeViewableMixin, DetailView):
 
     def render_to_response(self, context, **kwargs):
         if self.template_name_suffix == "_text":
-            kwargs["content_type"] = "text/plain; charset=utf-8"
+            return http.HttpResponse(
+                self.object.get_as_text(extra_context={"request": self.request}),
+                content_type="text/plain; charset=utf-8"
+            )
         return super(RecipeDetailView, self).render_to_response(
             context, **kwargs
         )

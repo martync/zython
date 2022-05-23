@@ -19,7 +19,6 @@
 
 
 {% block content %}
-
 {% if request.user.is_active %}
     <div class="alert alert-info">
         {% trans "You are logged in." %}
@@ -40,6 +39,7 @@
                     {% for field in form %}
                         {% addFormField field size="XL" %}
                     {% endfor %}
+
                     <p><br></p>
                     <div class="text-center">
                         <p><input type="submit" class='btn btn-primary' value="{% trans "Log in" %}" /></p>

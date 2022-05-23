@@ -13,6 +13,10 @@ urlpatterns = [
         RecipeImportView.as_view(),
         name='brew_recipe_import'),
 
+    re_path(r'^export/$',
+        RecipeExportView.as_view(),
+        name='brew_recipe_export'),
+
     re_path(r'^user/(?P<username>\w+)/$',
         RecipeListView.as_view(),
         name='brew_recipe_user'),

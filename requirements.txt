@@ -10,3 +10,5 @@ gunicorn==19.1.1
 lxml==4.8.0
 django-contrib-comments==2.2.0
 six==1.6.1
+pdfkit==1.0.0
+dj-pagination==2.5.0

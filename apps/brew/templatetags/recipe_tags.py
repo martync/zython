@@ -32,7 +32,7 @@ class RecipeIngredientTxt(template.Node):
                 i,
                 "%s" % malt.percent() + "%"
             ]
-            lines.append(";".join([unicode(a) for a in line]))
+            lines.append(";".join([str(a) for a in line]))
 
         # --- HOPS ---
         # ------------
@@ -45,7 +45,7 @@ class RecipeIngredientTxt(template.Node):
                 i,
                 "%.1f" % hop.ibu() + " IBUs"
             ]
-            lines.append(";".join([unicode(a) for a in line]))
+            lines.append(";".join([str(a) for a in line]))
 
         # --- MISC ---
         # ------------
@@ -58,8 +58,8 @@ class RecipeIngredientTxt(template.Node):
                 i,
                 "-"
             ]
-            lines.append(";".join([unicode(a) for a in line]))
-        csv_lines = "\n".join([unicode(a) for a in lines])
+            lines.append(";".join([str(a) for a in line]))
+        csv_lines = "\n".join([str(a) for a in lines])
         csv = CsvToTxt(csv_lines, delimiter=";")
         return csv.render()
 
@@ -92,15 +92,15 @@ class RecipeMashStepsTxt(template.Node):
             if i == 1:
                 temperature = get_converted_value(step.initial_heat(), temperature_unit, "temperature", 0)
             description += u"%s" % _('Heat over') + " "
-            description += unicode(temperature)
+            description += str(temperature)
             line = [
                 step.name,
                 description,
                 step_temperature,
                 "%s min" % step.step_time
             ]
-            lines.append(";".join([unicode(a) for a in line]))
-        csv_lines = "\n".join([unicode(a) for a in lines])
+            lines.append(";".join([str(a) for a in line]))
+        csv_lines = "\n".join([str(a) for a in lines])
         csv = CsvToTxt(csv_lines, delimiter=";")
         return csv.render()
 

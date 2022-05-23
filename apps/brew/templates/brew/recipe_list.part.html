@@ -1,6 +1,6 @@
 {% load i18n %}
+{% load pagination_tags %}
 
-<h1>TODO : PAGINATE</h1>
 <table class='table'>
     <thead>
         <tr>
@@ -13,12 +13,9 @@
         </tr>
     </thead>
     <tbody>
-        {# {% autopaginate object_list 50 %} #}
+        {% autopaginate object_list 50 %}
         {% for object in object_list %}{% include "brew/recipe_list_row.html" %}{% endfor %}
     </tbody>
 </table>
-{% comment %}
-    
 {% if object_list %}
 {% paginate %}{% endif %}
-{% endcomment %}

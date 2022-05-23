@@ -26,7 +26,7 @@ class AjaxCallsTestCaseBase(object):
 
     def is_ajax_response_correct(self, response):
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response._headers["content-type"], ('Content-Type', 'application/json'))
+        self.assertEqual(response.headers["content-type"], "application/json")
         json_response = json.loads(response.content)
         self.assertEqual(json_response["status"], "ok")
 
