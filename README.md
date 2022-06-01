@@ -3,13 +3,13 @@ Zython 2.2.0
 
 [http://zython.me](http://zython.me)
 
-[![Build Status](https://drone.io/bitbucket.org/m_clement/zython/status.png)](https://drone.io/bitbucket.org/m_clement/zython/latest)
+
 
 
 Qu'est-ce ?
 -----------
 
-Zython est une application en ligne d'aide à la conception de recettes de bière et est logée sur http://zython.me
+Zython est une application en ligne d'aide à la conception de recettes de bière et est logée sur https://zython.me
 
 
 Pourquoi ?
@@ -18,7 +18,7 @@ Pourquoi ?
 Parce que le milieu brassicol manque d'un logiciel qui permette toutes ces choses à la fois : 
 
  * d'en disposer gratuitement
- * de choisir les unités de notre cher pays
+ * de choisir les unités locales (métrique/impérial...)
  * de pouvoir s'en servir quelque soit l'ordinateur utilisé
  * partager une recette privée avec quelqu'un pour la travailler
  * échanger des commentaires sur une recette
@@ -28,9 +28,9 @@ Parce que le milieu brassicol manque d'un logiciel qui permette toutes ces chose
 Equivalents
 -----------
 
-(ceux que je connais) 
+(ceux que je connais / pas forcément gratuits / pas forcément en français)
 
- * http://joliebulle.tuxfamily.org/ (français et python (y))
+ * http://joliebulle.tuxfamily.org/
  * http://hopville.com/
  * http://beerrecipes.org/
  * http://beersmith.com/
@@ -40,21 +40,21 @@ Equivalents
 Participer
 ----------
 
-Vous savez *traduire* ? Connaissez vous assez le *brassage* pour m'aider à améliorer les formules ? Vous êtes *développeur pythoniste amateur de bière*  ? Vous *voulez* m'envoyer un chèque ? Peut-être plutôt *designer* ? Si vous vous reconnaissez, je me ferais un plaisir de vous faire participer au projet. 
-
-Vous pouvez tout simplement en parler à des brasseurs qui pourraient être intéressés.
+Vous pouvez participer à ce projet open source et gratuit lancé en 2012 via Tipee : https://tipeee.com/zythonme
 
 
-TODO (liste des choses à faire)
-===============================
 
- * Ecrire des tests automatiques (bouh)
+TODO list
+=========
+
+N'hésitez pas à me faire part de vos remarques via le Tipee ci-dessus. Ce sont vos retours qui me permettent de peser les priorités
+
+ * Ecrire plus de tests automatiques
  * Ajout d'eau dans la recette à n'importe quel moment
  * Ajout de grain pendant l'ébullition
  * Ajout d'épice pendant l'empattage
  * Différencier visuellement l'empattage de l'ébullition (fiche recette plus élaborée ?)
  * Export au format BeerXML
- * Définir une notion de "recette validée". Admin ? Vote des autres brasseurs ?
 
 
 Licence
