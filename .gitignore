@@ -9,3 +9,4 @@ db.sqlite3
 static
 .direnv
 medias/.sass-cache/
+.coverage

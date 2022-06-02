@@ -1,0 +1,29 @@
+Zython migration from old database
+----------------------------------
+
+ * 
+ * Import
+
+
+# Create schema from an empty database
+python manage.py migrate
+
+# Export the datas as fixtures
+
+/home/martyn/.virtualenvs/zython/bin/python /home/martyn/zython/web/manage.py dumpdata --format=json sites > ../dumps/sites.json
+
+/home/martyn/.virtualenvs/zython/bin/python /home/martyn/zython/web/manage.py dumpdata --format=json comments > ../dumps/comments.json
+
+/home/martyn/.virtualenvs/zython/bin/python /home/martyn/zython/web/manage.py dumpdata --format=json auth > ../dumps/auth.json
+
+/home/martyn/.virtualenvs/zython/bin/python /home/martyn/zython/web/manage.py dumpdata --format=json account > ../dumps/account.json
+
+/home/martyn/.virtualenvs/zython/bin/python /home/martyn/zython/web/manage.py dumpdata --format=json brew > ../dumps/brew.json
+
+
+# Import the datas
+python manage.py loaddata ../dumps/contenttypes.json
+python manage.py loaddata ../dumps/sites.json
+python manage.py loaddata ../dumps/auth.json
+python manage.py loaddata ../dumps/account.json
+python manage.py loaddata ../dumps/brew.json
