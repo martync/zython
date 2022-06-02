@@ -13,7 +13,9 @@ __all__ = (
 )
 
 
-def style_choices(qs_kwargs={}):
+def style_choices(qs_kwargs=None):
+    if not qs_kwargs:
+        qs_kwargs = {}
     old_number = 0
     item = ("", "-------")
     items = []
@@ -38,12 +40,15 @@ class RecipeForm(BS3FormMixin, UnitModelForm):
         'temperature': ['grain_temperature', ]
     }
     recipe_style = forms.ChoiceField(
-        label="Style", choices=style_choices(), required=False)
+        label="Style", choices=(), required=False)
 
     def __init__(self, *args, **kwargs):
         super(RecipeForm, self).__init__(*args, **kwargs)
-        self.fields["batch_size"].widget.attrs["class"] += " input-lg"
-        self.fields["name"].widget.attrs["class"] += " input-lg"
+        batch_size_css_class = self.fields["batch_size"].widget.attrs.get("class", "")
+        name_css_class = self.fields["name"].widget.attrs.get("class", "")
+        self.fields["batch_size"].widget.attrs.update({"class":"{} input-lg".format(batch_size_css_class)})
+        self.fields["name"].widget.attrs.update({"class":"{} input-lg".format(name_css_class)})
+        self.fields["recipe_style"].choices = style_choices()
 
         if self.instance.style:
             self.initial['recipe_style'] = str(self.instance.style.pk)
@@ -180,10 +185,15 @@ class MashStepForm(BS3FormMixin, UnitModelForm):
 class RecipeSearchForm(forms.Form):
     style = forms.ChoiceField(
         label=_(u"Style"),
-        choices=style_choices(qs_kwargs={'recipe__id__isnull': False}),
+        choices=(),
         required=False
     )
     q = forms.CharField(required=False)
+
+    def __init__(self, *args, **kwargs):
+        super(RecipeSearchForm, self).__init__(*args, **kwargs)
+        self.fields["style"].choices = style_choices(qs_kwargs={'recipe__id__isnull': False})
+
 
     def search(self, qs):
         data = self.cleaned_data

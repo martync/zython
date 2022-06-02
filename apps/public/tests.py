@@ -1,5 +1,5 @@
 from django.test import Client
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 client = Client()
 response = client.get(reverse("root_url"))

@@ -89,6 +89,7 @@ class BaseIngredientMixin(object):
         json_object = serializers.serialize("json", type(self).objects.filter(pk=self.pk))
         python_object = json.loads(json_object)[0]
         python_object["fields"]["%s_id" % self.cls_name()] = str(self.id)
+        python_object["fields"] = dict([(k, v) for k, v in python_object["fields"].items() if v is not None])
         return json.dumps([python_object, ])
 
     def cls_name(self):
@@ -96,7 +97,7 @@ class BaseIngredientMixin(object):
 
 
 class BaseStockModel(models.Model):
-    stock_user = models.ForeignKey(User, null=True, blank=True)
+    stock_user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
     stock_added = models.DateTimeField(null=True, blank=True)
 
     def is_in_stock(self):

@@ -1,6 +1,6 @@
 from django import http
 from django.utils.decorators import method_decorator
-from braces.views import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from ..decorators import recipe_author
 from ..models import Recipe, RecipeHop, RecipeMalt, RecipeMisc, RecipeYeast, Malt, Misc, Hop, Yeast

@@ -2,6 +2,7 @@ from django.forms import widgets
 
 BS3_FORM_CONTROL_SUBTYPES = (
     widgets.TextInput,
+    widgets.PasswordInput,
     widgets.Textarea,
     widgets.Select,
     widgets.FileInput,
@@ -18,11 +19,12 @@ class BS3FormBaseMixin(object):
         widget = field.widget
         current_attrs = widget.attrs or {}
         existing_class = current_attrs.get('class', '')
-        if not 'no_BS3' in existing_class:
+        if 'no_BS3' not in existing_class:
             field.widget.attrs.update({'class': "%s %s" % (cls.css_class, existing_class)})
 
     def _apply_formatting(self):
-        for k, v in self.fields.iteritems():
+        for field in self:
+            k = field.name
             widget = self.fields[k].widget
             if "Check" in u"%s" % widget.__class__:
                 continue

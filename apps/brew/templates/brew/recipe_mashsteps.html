@@ -1,5 +1,5 @@
-{% load i18n unit_tags cache staticfiles %}
-{% load url from future %}
+{% load i18n unit_tags cache static %}
+
 
 {% if object.mashstep_set.all %}
     {% cache 600 recipe_mashsteps object.cache_key can_edit %}

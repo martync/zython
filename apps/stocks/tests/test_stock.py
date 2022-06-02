@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.test.client import Client
 from django.contrib.auth.models import User
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from brew.models import *
 from public.utils import show_in_browser
 from public.utils.testing import AjaxCallsTestCaseBase
@@ -10,6 +10,9 @@ from ..choices import INGREDIENTS_DICT
 
 
 class StockTest(AjaxCallsTestCaseBase, TestCase):
+    fixtures = [
+        "initial_data.json"
+    ]
     user_info = {'username': 'martyn',
                  'password': 'magicpony',
                  'email': 'martyn@example.com'}
@@ -69,7 +72,7 @@ class StockTest(AjaxCallsTestCaseBase, TestCase):
         }
 
     def test_ingredient_views(self):
-        for k in INGREDIENTS_DICT.iterkeys():
+        for k in INGREDIENTS_DICT.keys():
             url = reverse("stock_ingredient", args=[k])
             response = self.client.get(url)
             self.assertTemplateUsed(response, "stocks/ingredient.html")

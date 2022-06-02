@@ -1,7 +1,7 @@
 from datetime import datetime
 import time
-import htmlentitydefs
-from cStringIO import StringIO
+import html.entities
+from io import StringIO
 from lxml import etree
 
 from .models import Recipe, RecipeHop, RecipeMalt,\
@@ -25,7 +25,7 @@ def populate_object(xml_item, object, fields):
                     pass
                 setattr(object, field_name, value)
         except IndexError:
-            print "CANT GET FIELD %s" % xml_key
+            print("CANT GET FIELD %s" % xml_key)
     return object
 
 
@@ -42,7 +42,7 @@ def xml_import(xml_file, model_class, parent_loop, item_loop, fields):
         try:
             obj.save()
         except:
-            print "CANT SAVE row #%s" % i
+            print("CANT SAVE row #%s" % i)
 
 
 def kg_to_g(val):
@@ -54,7 +54,7 @@ def import_beer_xml(datas, user):
         "<RECIPES>",
         """<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" ><RECIPES>"""
     )
-    defs = htmlentitydefs.entitydefs
+    defs = html.entities.entitydefs
     for key in defs.keys():
         datas = datas.replace('&' + key + ';', defs[key])
 

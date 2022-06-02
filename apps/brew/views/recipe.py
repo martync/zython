@@ -1,3 +1,6 @@
+import io
+import zipfile
+
 from django import http
 from django.utils.translation import ugettext_lazy as _
 from django.contrib import messages
@@ -6,9 +9,9 @@ from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from django.views.generic import ListView, CreateView, DetailView, DeleteView
 from django.views.generic.edit import FormView, UpdateView
-from django.core.urlresolvers import reverse
+from django.urls import reverse
+from django.contrib.auth.mixins import LoginRequiredMixin
 
-from braces.views import LoginRequiredMixin
 from units.views import UnitViewFormMixin
 from guardian.shortcuts import get_users_with_perms, assign, get_perms_for_model, remove_perm
 from fm.views import JSONResponseMixin
@@ -22,7 +25,7 @@ from ..helpers import import_beer_xml
 __all__ = (
     "RecipeListView", "UserRecipeListView", "UserListView", "RecipeCreateView", "RecipeImportView",
     "RecipeDetailView", "RecipeDeleteView", "RecipeUpdateView", "RecipeCloneView", "RecipeEfficiencyCalculatorView",
-    "set_user_perm"
+    "RecipeExportView", "set_user_perm"
 )
 
 
@@ -93,6 +96,32 @@ class RecipeCreateView(LoginRequiredMixin, UnitViewFormMixin, CreateView):
         return initial
 
 
+class RecipeExportView(UserListView):
+    template_name = "brew/recipe_export.html"
+
+    def get(self, request, *args, **kwargs):
+        if request.GET.get("format") == "pdf":
+            return self.download_pdf(request)
+        return super(RecipeExportView, self).get(request, *args, **kwargs)
+
+    def download_pdf(self, request):
+        user = request.user
+        b = io.BytesIO()
+        zf = zipfile.ZipFile(b, mode='w')
+
+        qs = Recipe.objects.filter(user=user).select_related('user', 'style')
+        for q in qs:
+            recipe_txt = q.get_as_text(extra_context={"request": request})
+            zf.writestr('{}.txt'.format(q.slug_url), recipe_txt)
+
+        zf.close()
+        response = http.HttpResponse(b.getbuffer())
+        response['Content-Type'] = 'application/x-zip-compressed'
+        response['Content-Disposition'] = 'attachment; filename=zython-recipes-{}.zip'.format(user.username)
+        return response
+
+
+
 class RecipeImportView(LoginRequiredMixin, FormView):
     form_class = RecipeImportForm
     template_name = "brew/recipe_import_form.html"
@@ -119,7 +148,10 @@ class RecipeDetailView(RecipeSlugUrlMixin, RecipeViewableMixin, DetailView):
 
     def render_to_response(self, context, **kwargs):
         if self.template_name_suffix == "_text":
-            kwargs["content_type"] = "text/plain; charset=utf-8"
+            return http.HttpResponse(
+                self.object.get_as_text(extra_context={"request": self.request}),
+                content_type="text/plain; charset=utf-8"
+            )
         return super(RecipeDetailView, self).render_to_response(
             context, **kwargs
         )
@@ -132,7 +164,7 @@ class RecipeDetailView(RecipeSlugUrlMixin, RecipeViewableMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super(RecipeDetailView, self).get_context_data(**kwargs)
         if self.request.user.is_active:
-            for key, model in SLUG_MODELROOT.iteritems():
+            for key, model in SLUG_MODELROOT.items():
                 context['%s_list' % key] = model.objects.all()
                 context['%s_form' % key] = SLUG_MODELFORM[key](request=self.request)
         self.template_name_suffix = "_%s" % self.page

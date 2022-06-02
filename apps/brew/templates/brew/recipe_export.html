@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+<h1>{% trans "Export my recipes" %}</h1>
+<hr>
+<div class="well lead text-center">
+    <p>{% blocktrans %}
+        All your recipes will be exported multiple text files in a zip
+    {% endblocktrans %}
+    </p>
+    <hr>
+    <a href="?format=pdf" class="btn btn-primary btn-lg">{% trans "Download" %}</a>
+</div>
+{% endblock content %}

@@ -14,10 +14,10 @@ class Command(NoArgsCommand):
         try:
             cursor.execute("ALTER TABLE `brew_recipe` ADD `slug_url` varchar(50);")
         except OperationalError:
-            print "Problem while adding the column"
+            print("Problem while adding the column")
 
         for r in Recipe.objects.all():
             r.update_slug_url()
-            print r.id, ",", r.slug_url
+            print(r.id, ",", r.slug_url)
 
         cursor.execute("ALTER TABLE `brew_recipe` change `slug_url` `slug_url` varchar(50) NOT NULL;")

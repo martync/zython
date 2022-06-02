@@ -1,13 +1,17 @@
 from django.test import TestCase
 from django.test.client import Client
 from django.contrib.auth.models import User
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from brew.models import *
 from public.utils import show_in_browser
 from public.utils.testing import AjaxCallsTestCaseBase
 import json
 
+
 class RecipeTest(AjaxCallsTestCaseBase, TestCase):
+    fixtures = [
+        "initial_data.json"
+    ]
     user_info = {'username': 'martyn',
                  'password': 'magicpony',
                  'email': 'martyn@example.com'}
