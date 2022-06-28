@@ -39,6 +39,10 @@ urlpatterns = [
         TemplateView.as_view(template_name="how.html"),
         name="how_it_works"),
 
+    re_path(r'^authors-and-tippers/',
+        TemplateView.as_view(template_name="authors-and-tippers.html"),
+        name="authors_and_tippers"),
+
     re_path(r'login/recipe/$',
         RecipeListView.as_view(),
         name="login_recipe"),

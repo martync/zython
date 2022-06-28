@@ -27,3 +27,7 @@ python manage.py loaddata ../dumps/sites.json
 python manage.py loaddata ../dumps/auth.json
 python manage.py loaddata ../dumps/account.json
 python manage.py loaddata ../dumps/brew.json
+
+# Fix the account and user apps
+python manage.py remove_useless_users
+python manage.py fix_user_accounts

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+
+{% block content %}
+<h1>{% block title %}
+    {% trans "Authors and Tippers" %}
+{% endblock title %}</h1>
+
+<h2>{% trans "Authors" %}</h2>
+<ul>
+    <li>Martyn CLEMENT (Creator)</li>
+    <li>Unknown* (Calculateur d'efficacité)</li>
+</ul>
+
+<small class="text-grey">* Identité perdur lorsque le repo mercurial s'est auto-détruit. Si tu te reconnais, fais moi signe</small>
+
+<hr>
+
+<h2>{% trans "Tippers" %}</h2>
+
+<a href="https://en.tipeee.com/zythonme" target="_blank">{% trans "Make a donation on Tipeee" %}</a>
+
+
+{% endblock %}
