@@ -189,6 +189,6 @@ ACCOUNT_EMAIL_UNIQUE = False
 LOGIN_ERROR_URL = LOGIN_URL
 
 try:
-    from local_settings import *
+    from .local_settings import *
 except ImportError:
     pass
