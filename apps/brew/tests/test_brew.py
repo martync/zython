@@ -347,3 +347,17 @@ class RecipeTest(AjaxCallsTestCaseBase, TestCase):
         recipe2.save()
         recipe1.delete()
         self.assertEqual(recipe2, Recipe.objects.get(pk=recipe2.pk))
+
+    def test_batch_size_division_zero(self):
+        recipe = Recipe(
+            user=self.user,
+            name="Test Recipe PoneyPoneyPoney",
+            batch_size="0",
+            style=self.style,
+            recipe_type="allgrain",
+            private=False,
+            efficiency="75",
+        )
+        recipe.save()
+        self.assertEqual(recipe.get_original_gravity(), '1.000')
+        self.assertEqual(recipe.compute_empirical_efficiency(50.3, 1.069), 0)

@@ -331,6 +331,8 @@ class Recipe(models.Model):
         points = []
         if not batch_size:
             batch_size = l_to_gal(self.batch_size)
+        if not batch_size:
+            return 0.
         for grain in self.recipemalt_set.all():
             pounds = kg_to_lb(float(grain.amount))
             gravity = float(grain.potential_gravity - 1) * 1000.
