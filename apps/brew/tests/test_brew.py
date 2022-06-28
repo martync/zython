@@ -361,3 +361,29 @@ class RecipeTest(AjaxCallsTestCaseBase, TestCase):
         recipe.save()
         self.assertEqual(recipe.get_original_gravity(), '1.000')
         self.assertEqual(recipe.compute_empirical_efficiency(50.3, 1.069), 0)
+
+    def test_ingredients_no_duration_typeerror(self):
+        hop = Hop.objects.filter(name__icontains="Styrian")[0]
+        client = self.get_logged_client()
+        url_addition = reverse(
+            'brew_recipe_addingredient', args=[self.recipe.id, "hop"])
+        durations = ["", "40"]
+        for duration in durations:
+            datas = {
+                'amount': "80.5",
+                "boil_time": duration,
+                "hop_id": hop.id,
+                "acid_alpha": hop.acid_alpha,
+                "acid_beta": hop.acid_beta,
+                "usage": hop.usage,
+                "form": hop.form,
+                "name": hop.name,
+                "origin": hop.origin,
+                "hop_type": hop.hop_type,
+            }
+            response = client.post(url_addition, datas)
+            self.assertEqual(response.status_code, 302)
+
+        recipe = Recipe.objects.get(id=self.recipe.id)
+        print(recipe.ingredients())
+

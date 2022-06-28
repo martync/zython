@@ -651,7 +651,7 @@ class RecipeHop(UpdateRecipeModel, BaseHop):
         if self.usage == "dryhop":
             return (self.dry_days or 1) * 24 * 60
         else:
-            return self.boil_time
+            return self.boil_time or 0
 
     def ibu(self):
         if self.usage == "dryhop":
@@ -699,7 +699,7 @@ class RecipeMisc(UpdateRecipeModel, BaseMisc):
 
     def get_duration(self):
         # Duration in minutes
-        duration = self.time
+        duration = self.time or 0
         if self.time_unit == 'hours':
             return duration * 60
         elif self.time_unit == 'days':
