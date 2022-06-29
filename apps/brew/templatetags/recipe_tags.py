@@ -66,10 +66,10 @@ class RecipeIngredientTxt(template.Node):
 
 class RecipeMashStepsTxt(template.Node):
     def __init__(self, recipe):
-        self.recipe = template.Variable(recipe)
+        self.recipe_var = template.Variable(recipe)
 
     def render(self, context):
-        self.recipe = self.recipe.resolve(context)
+        self.recipe = self.recipe_var.resolve(context)
         request = context['request']
         key = "%s%s" % (app_settings.CONTEXT_PREFIX, "weight")
         volume_unit = request.session.get("%s%s" % (app_settings.CONTEXT_PREFIX, "volume"))
