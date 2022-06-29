@@ -17,8 +17,11 @@ def get_converted_value(value, user_unit, group, long_term=True, raw_output=Fals
         function = '%s_to_%s' % (source_unit, user_unit)
         if reverse:
             function = '%s_to_%s' % (user_unit, source_unit)
-        convers_function = getattr(conversions, function)
-        value = convers_function(value)
+        if hasattr(conversions, function):
+            convers_function = getattr(conversions, function)
+            value = convers_function(value)
+        else:
+            value = None
     if value == "" or value is None:
         return ""
     value = precision % float(value)

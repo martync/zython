@@ -8,5 +8,5 @@ class ZythonTestRunner(DiscoverRunner):
         logging.basicConfig(level=logging.WARNING)
 
         if not test_labels:
-            test_labels = ['brew', 'stocks']
+            test_labels = ['brew', 'stocks', 'units']
         return super(ZythonTestRunner, self).run_tests(test_labels, extra_tests, **kwargs)
