@@ -8,10 +8,10 @@ register = template.Library()
 
 class RecipeIngredientTxt(template.Node):
     def __init__(self, recipe):
-        self.recipe = template.Variable(recipe)
+        self.recipe_var = template.Variable(recipe)
 
     def render(self, context):
-        self.recipe = self.recipe.resolve(context)
+        self.recipe = self.recipe_var.resolve(context)
         request = context['request']
         key = "%s%s" % (app_settings.CONTEXT_PREFIX, "weight")
         weight_unit = request.session.get("%s%s" % (app_settings.CONTEXT_PREFIX, "weight"))

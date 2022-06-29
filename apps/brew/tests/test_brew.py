@@ -385,5 +385,9 @@ class RecipeTest(AjaxCallsTestCaseBase, TestCase):
             self.assertEqual(response.status_code, 302)
 
         recipe = Recipe.objects.get(id=self.recipe.id)
-        print(recipe.ingredients())
+        self.assertEqual(len(recipe.ingredients()), 2)
 
+    def test_get_as_text(self):
+        response = self.client.get(reverse("brew_recipe_print", args=[self.recipe.pk, self.recipe.slug_url]))
+        recipe_txt = self.recipe.get_as_text(response.context)
+        self.assertIn("Fly sparge with 57.7 l of water at 78.0 c", recipe_txt)

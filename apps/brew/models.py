@@ -580,7 +580,6 @@ class Recipe(models.Model):
         return render_to_string("brew/recipe_detail.txt", context)
 
 
-
 class Malt(BaseStockModel, BaseMalt):
     stock_amount = models.DecimalField(max_digits=8, decimal_places=2, help_text="kg", null=True, blank=True)
     stock_units = "weight"
