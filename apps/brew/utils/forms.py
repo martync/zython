@@ -7,7 +7,7 @@ BS3_FORM_CONTROL_SUBTYPES = (
     widgets.Select,
     widgets.FileInput,
     widgets.SelectMultiple,
-
+    widgets.NumberInput,
 )
 
 
