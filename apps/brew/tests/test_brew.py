@@ -391,3 +391,10 @@ class RecipeTest(AjaxCallsTestCaseBase, TestCase):
         response = self.client.get(reverse("brew_recipe_print", args=[self.recipe.pk, self.recipe.slug_url]))
         recipe_txt = self.recipe.get_as_text(response.context)
         self.assertIn("Fly sparge with 57.7 l of water at 78.0 c", recipe_txt)
+
+    def test_destock_view(self):
+        self.recipe
+        client = self.get_logged_client()
+        url_addition = reverse('brew_recipe_destock', args=[self.recipe.id, self.recipe.slug_url])
+        response = self.client.get(url_addition)
+        self.assertEqual(response.status_code, 200)

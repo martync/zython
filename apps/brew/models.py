@@ -393,6 +393,8 @@ class Recipe(models.Model):
         if recipe_srm is None:
             grain_srm = []
             batch_size = l_to_gal(float(self.batch_size))
+            if not batch_size:
+                return 0.
             for grain in self.recipemalt_set.all():
                 pounds = kg_to_lb(float(grain.amount))
                 lovibond = ebc_to_srm(float(grain.color))

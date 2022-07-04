@@ -48,7 +48,7 @@ class RecipeDestockView(RecipeAuthorMixin, JSONResponseMixin, DetailView):
 
     def previsionnal_stocks(self):
         ingredients = {}
-        for k in INGREDIENTS_DICT.iterkeys():
+        for k in INGREDIENTS_DICT.keys():
             ingredients["%ss" % k] = self.previsionnal_stocks_ingredient(k)
         return ingredients
 

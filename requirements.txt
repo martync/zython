@@ -1,6 +1,6 @@
 Django < 4.0
 Pillow
-django-fm==0.1.9
+django-fm==0.2.5
 django-crispy-forms==1.13.0
 django-guardian==2.4.0
 django-reversion==1.6.5
