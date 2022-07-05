@@ -402,7 +402,7 @@ class Recipe(models.Model):
             recipe_mcu = float(sum(grain_srm))
             recipe_srm = 1.4922 * (recipe_mcu ** 0.6859)
             cache.set(cache_key, recipe_srm, 60 * 15)
-        return float(recipe_srm)
+        return float(recipe_srm.real)
 
     def get_ebc(self):
         return srm_to_ebc(self.get_srm())
