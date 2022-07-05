@@ -1,0 +1,8 @@
+{% load i18n %}
+<a 
+    class="fm-create btn btn-primary btn-sm"
+    data-fm-head="{% trans "Add mash step" %}"
+    data-fm-callback="reload"
+    href="{% url "brew_mash_add" object.id %}">
+    {% trans "Add mash step" %} <span class="glyphicon glyphicon-plus"></span>
+</a>

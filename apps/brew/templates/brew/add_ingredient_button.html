@@ -1,0 +1,28 @@
+{% load i18n %}
+{% load static %}
+<div class="btn-group pull-right">
+  <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown">
+    {% trans "Add ingredient" %} <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+        <a class="fm-create" data-fm-head="{% trans "Grain" %}" data-fm-callback="reload" href="{% url "brew_recipe_addingredient" recipe.id "malt" %}">
+            <img src="{% static "images/icon_grain.png" %}" alt="Grain icon"> {% trans "Grain" %}
+        </a>
+    </li>
+    <li>
+        <a class="fm-create" data-fm-head="{% trans "Hop" %}" data-fm-callback="reload" href="{% url "brew_recipe_addingredient" recipe.id "hop" %}">
+            <img src="{% static "images/icon_hop.png" %}" alt="Hop icon"> {% trans "Hop" %}
+        </a>
+    </li>
+    <li>
+        <a class="fm-create" data-fm-head="{% trans "Misc" %}" data-fm-callback="reload" href="{% url "brew_recipe_addingredient" recipe.id "misc" %}">
+            <img src="{% static "images/icon_misc.png" %}" alt="Misc icon">&nbsp;{% trans "Misc" %}
+        </a>
+    </li>
+    <li>
+        <a class="fm-create" data-fm-head="{% trans "Yeast" %}" data-fm-callback="reload" href="{% url "brew_recipe_addingredient" recipe.id "yeast" %}">
+            <img src="{% static "images/icon_yeast.png" %}" alt="Yeast icon">&nbsp;{% trans "Yeast" %}</a>
+        </li>
+  </ul>
+</div>

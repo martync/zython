@@ -79,7 +79,11 @@
     </table>
     {% endcache %}
 {% else %}
-    <div class="alert alert-warning">
-        Start adding a mash step
+    <div class="well lead">
+        {% trans "Start adding a mash step" %}
+        <div class="pull-right">
+            
+        {% include "brew/add_mashstep_button.html" %}
+        </div>
     </div>
 {% endif %}

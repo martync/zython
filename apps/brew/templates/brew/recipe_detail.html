@@ -106,37 +106,8 @@
 <div class="row">
     <div class="col-xs-12 col-sm-8 col-md-9 col-lg-9">
 
-        {% if can_edit %}
-            <div class="btn-group pull-right">
-            {% if not object.recipemalt_set.all %}
-                <span class="popover-menu" tabindex="0" data-trigger="focus" type="button" data-container="body" title="{% trans "Let's begin" %}{#'"#}" data-toggle="popover" data-placement="left" data-content="{% trans "Start adding some malt here. Then hops etc..." %}."></span>                
-            {% endif %}
-              <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown">
-                {% trans "Add ingredient" %} <span class="caret"></span>
-              </button>
-              <ul class="dropdown-menu" role="menu">
-                <li>
-                    <a class="fm-create" data-fm-head="{% trans "Grain" %}" data-fm-callback="reload" href="{% url "brew_recipe_addingredient" recipe.id "malt" %}">
-                        <img src="{% static "images/icon_grain.png" %}" alt="Grain icon"> {% trans "Grain" %}
-                    </a>
-                </li>
-                <li>
-                    <a class="fm-create" data-fm-head="{% trans "Hop" %}" data-fm-callback="reload" href="{% url "brew_recipe_addingredient" recipe.id "hop" %}">
-                        <img src="{% static "images/icon_hop.png" %}" alt="Hop icon"> {% trans "Hop" %}
-                    </a>
-                </li>
-                <li>
-                    <a class="fm-create" data-fm-head="{% trans "Misc" %}" data-fm-callback="reload" href="{% url "brew_recipe_addingredient" recipe.id "misc" %}">
-                        <img src="{% static "images/icon_misc.png" %}" alt="Misc icon">&nbsp;{% trans "Misc" %}
-                    </a>
-                </li>
-                <li>
-                    <a class="fm-create" data-fm-head="{% trans "Yeast" %}" data-fm-callback="reload" href="{% url "brew_recipe_addingredient" recipe.id "yeast" %}">
-                        <img src="{% static "images/icon_yeast.png" %}" alt="Yeast icon">&nbsp;{% trans "Yeast" %}</a>
-                    </li>
-              </ul>
-            </div>
-            
+        {% if can_edit and object.recipemalt_set.all.exists %}
+            {% include "brew/add_ingredient_button.html" %}
         {% endif %}
 
         <h2>{% trans "Ingredients" %}</h2>
@@ -145,17 +116,9 @@
 
         {% if can_edit %}
             <div class="pull-right">
-                {% if object.recipemalt_set.all and object.recipehop_set.all and not object.mashstep_set.all %}
-                    <span class="popover-menu" tabindex="0" data-trigger="focus" type="button" data-container="body" title="{% trans "Don't forget your mashsteps" %}" data-toggle="popover" data-placement="left" data-content="{% trans "When your recipe will look delicious, don't forget to add your mashstep." %}." ></span>                
+                {% if object.mashstep_set.all.exists %}
+                    {% include "brew/add_mashstep_button.html" %}
                 {% endif %}
-
-                <a 
-                    class="fm-create btn btn-primary btn-sm"
-                    data-fm-head="{% trans "Add mash step" %}"
-                    data-fm-callback="reload"
-                    href="{% url "brew_mash_add" object.id %}">
-                    {% trans "Add mash step" %} <span class="glyphicon glyphicon-plus"></span>
-                </a>
             </div>
         {% endif %}
 

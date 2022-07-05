@@ -117,6 +117,7 @@
    <ul class="nav navbar-nav navbar-right">
      <li class="dropdown">
         {% get_current_language as LANGUAGE_CODE %}
+        {% get_available_languages as LANGUAGES %}
 
         <a href="#" class="dropdown-toggle" data-toggle="dropdown">{% get_language_info for LANGUAGE_CODE as lang %}
         {{ lang.code|upper }} <span class="caret"></span></a>

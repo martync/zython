@@ -144,7 +144,14 @@
 {% else %}
     <div class="alert-box radius">
         {% if can_edit %}
-            {% trans "There are no ingredients yet. Start adding some grain and see the magic happening." %}
+
+            <div class="well lead">
+                
+
+            {% trans "Start adding some grain" %}
+            {% include "brew/add_ingredient_button.html" %}
+
+            </div>
         {% else %}
             {% trans "This beer looks empty :(" %}
         {% endif %}
