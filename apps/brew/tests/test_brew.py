@@ -406,6 +406,12 @@ class RecipeTest(AjaxCallsTestCaseBase, TestCase):
         self.recipe.update_slug_url(force_update=False)
         self.assertEqual(self.recipe.slug_url, initial_slug)
 
+        self.recipe.name = "???"
+        self.recipe.save()
+        self.recipe.update_slug_url(force_update=True)
+        self.assertEqual(self.recipe.slug_url, str(self.recipe.id))
+
+
     def test_destock_view(self):
         client = self.get_logged_client()
         url_addition = reverse('brew_recipe_destock', args=[self.recipe.id, self.recipe.slug_url])

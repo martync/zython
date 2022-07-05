@@ -149,6 +149,8 @@ class Recipe(models.Model):
         """
         if force_update or not self.slug_url:
             self.slug_url = slugify(u"%s" % self.name)[:49]
+            if not self.slug_url:
+                self.slug_url = str(self.id)
             self.save()
 
     def can_be_viewed_by_user(self, user):
