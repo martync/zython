@@ -143,9 +143,13 @@ class Recipe(models.Model):
     # - - -
     # Generic model class/methods
 
-    def update_slug_url(self):
-        self.slug_url = slugify(u"%s" % self.name)[:49]
-        self.save()
+    def update_slug_url(self, force_update=True):
+        """
+        * force_update (bool) : if True will update self.slug_url everytime. If False, won't update if slug_url is not None
+        """
+        if force_update or not self.slug_url:
+            self.slug_url = slugify(u"%s" % self.name)[:49]
+            self.save()
 
     def can_be_viewed_by_user(self, user):
         if self.private and user != self.user and not user.has_perm('brew.view_recipe', self):

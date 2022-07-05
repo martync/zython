@@ -392,8 +392,21 @@ class RecipeTest(AjaxCallsTestCaseBase, TestCase):
         recipe_txt = self.recipe.get_as_text(response.context)
         self.assertIn("Fly sparge with 57.7 l of water at 78.0 c", recipe_txt)
 
+    def test_update_slug_url(self):
+        initial_slug = "test-recipe-poneyponeyponey"
+        self.recipe.slug_url = "wrong-url"
+        self.recipe.save()
+        self.recipe.update_slug_url(force_update=False)
+        self.assertEqual(self.recipe.slug_url, "wrong-url")
+        self.recipe.update_slug_url()
+        self.assertEqual(self.recipe.slug_url, initial_slug)
+
+        self.recipe.slug_url = ""
+        self.recipe.save()
+        self.recipe.update_slug_url(force_update=False)
+        self.assertEqual(self.recipe.slug_url, initial_slug)
+
     def test_destock_view(self):
-        self.recipe
         client = self.get_logged_client()
         url_addition = reverse('brew_recipe_destock', args=[self.recipe.id, self.recipe.slug_url])
         response = self.client.get(url_addition)
