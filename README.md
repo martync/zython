@@ -43,6 +43,25 @@ Participer
 Vous pouvez participer à ce projet open source et gratuit lancé en 2012 via Tipee : https://tipeee.com/zythonme
 
 
+Contribuer
+----------
+
+Le déploiement de l'application en local nécessite d'avoir installé au
+préalable [Docker-Compose](https://docs.docker.com/compose/install/).
+
+Créer un fichier `.env` à partir du fichier `.env.template` et renseigner les
+diverses variables d'environnement.
+
+Lancer le conteneur :
+
+```bash
+$ docker-compose up web
+```
+
+Le serveur devrait être accessible depuis un navigateur à l'URL
+`http://127.0.0.1:[ZYTHON_PORT]` (avec comme valeur pour `ZYTHON_PORT` celle
+indiquer dans le fichier `.env`).
+
 
 TODO list
 =========
