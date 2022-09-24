@@ -6,7 +6,8 @@ dump.rdb
 
 db.sqlite3
 .venv
-static
 .direnv
 medias/.sass-cache/
 .coverage
+
+www

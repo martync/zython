@@ -175,7 +175,8 @@ STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
 
-MEDIA_ROOT = '%s/medias/' % BASE_DIR
+MEDIA_ROOT = '%s/www/medias/' % BASE_DIR
+STATIC_ROOT = '%s/www/static/' % BASE_DIR
 
 # Third party settings
 ANONYMOUS_USER_ID = 1
