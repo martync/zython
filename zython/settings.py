@@ -21,10 +21,7 @@ DEBUG = True
 
 TEMPLATE_DEBUG = True
 
-ALLOWED_HOSTS = [
-    "zython.me",
-    "127.0.0.1"
-]
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'zython.me,127.0.0.1').split(',')
 
 DEFAULT_FROM_EMAIL = 'ToBeer <noreply@zython.me>'
 
