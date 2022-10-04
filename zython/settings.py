@@ -60,10 +60,15 @@ INSTALLED_APPS = (
     'stocks',
     'guardian',
     'crispy_forms',
-    'fm'
+    'fm',
+    'captcha'
 )
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
+
+CAPTCHA_CHALLENGE_FUNCT = 'captcha.helpers.math_challenge'
+CAPTCHA_NOISE_FUNCTIONS = ('captcha.helpers.noise_null', )
+CAPTCHA_LETTER_ROTATION = (-5, 5)
 
 MIDDLEWARE = (
     'django.middleware.security.SecurityMiddleware',

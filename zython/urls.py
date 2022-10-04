@@ -57,6 +57,7 @@ urlpatterns = [
     re_path(r'^units/', include('units.urls')),
     re_path(r'^comments/', include('django_comments.urls')),
     re_path(r'^i18n/', include('django.conf.urls.i18n')),
+    path('captcha/', include('captcha.urls')),
     path('admin/', admin.site.urls),
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
