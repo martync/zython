@@ -4,10 +4,11 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserChangeForm
 from brew.utils.forms import BS3FormMixin
 from account.forms import LoginUsernameForm, SignupForm
+from captcha.fields import CaptchaField
 
 
 class ZythonSignupForm(BS3FormMixin, SignupForm):
-    pass
+    captcha = CaptchaField()
 
 
 class ZythonLoginForm(BS3FormMixin, LoginUsernameForm):

@@ -1,4 +1,5 @@
 from django.forms import widgets
+from captcha.fields import CaptchaTextInput
 
 BS3_FORM_CONTROL_SUBTYPES = (
     widgets.TextInput,
@@ -8,6 +9,7 @@ BS3_FORM_CONTROL_SUBTYPES = (
     widgets.FileInput,
     widgets.SelectMultiple,
     widgets.NumberInput,
+    CaptchaTextInput
 )
 
 
