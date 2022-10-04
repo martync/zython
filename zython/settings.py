@@ -21,10 +21,7 @@ DEBUG = True
 
 TEMPLATE_DEBUG = True
 
-ALLOWED_HOSTS = [
-    "zython.me",
-    "127.0.0.1"
-]
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'zython.me,127.0.0.1').split(',')
 
 DEFAULT_FROM_EMAIL = 'ToBeer <noreply@zython.me>'
 
@@ -178,7 +175,8 @@ STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
 
-MEDIA_ROOT = '%s/medias/' % BASE_DIR
+MEDIA_ROOT = '%s/www/medias/' % BASE_DIR
+STATIC_ROOT = '%s/www/static/' % BASE_DIR
 
 # Third party settings
 ANONYMOUS_USER_ID = 1
