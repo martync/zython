@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django.db.models.query import QuerySet
 from django.db.models import Q
@@ -33,3 +34,8 @@ class RecipeManager(models.Manager):
         else:
             qs = qs.filter(private=False)
         return qs
+
+
+class BeerStyleManager(models.Manager):
+    def get_active_styles(self):
+        return self.get_queryset().filter(guide=settings.ACTIVE_BJCP_YEAR)

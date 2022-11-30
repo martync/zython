@@ -3,7 +3,6 @@ from django.utils.translation import ugettext_lazy as _
 from django.db.models import Q
 from units.forms import UnitModelForm, UnitForm
 from .models import *
-from .settings import MAIN_STYLES
 from .utils.forms import BS3FormMixin
 
 __all__ = (
@@ -13,18 +12,22 @@ __all__ = (
 )
 
 
-def style_choices(qs_kwargs=None):
+def style_choices(qs_kwargs=None, initial_style=None):
     if not qs_kwargs:
         qs_kwargs = {}
     old_number = 0
     item = ("", "-------")
     items = []
-    for s in BeerStyle.objects.filter(**qs_kwargs).distinct():
+    styles = BeerStyle.objects.get_active_styles()
+    if initial_style and initial_style.is_outdated():
+        item = [initial_style.guide, ((initial_style.id, initial_style.get_dated_name()), )]
+    categories = dict(list(styles.values_list('number', 'category')))
+    for s in styles.filter(**qs_kwargs).distinct():
         number = s.number
         if old_number != number:
             items.append(item)
-            item = [MAIN_STYLES[str(number)], []]
-        item[1].append((s.id, "%s" % s))
+            item = [categories[number], []]
+        item[1].append((s.id, s.get_dated_name()))
         old_number = number
     items.append(item)
     return items
@@ -46,9 +49,9 @@ class RecipeForm(BS3FormMixin, UnitModelForm):
         super(RecipeForm, self).__init__(*args, **kwargs)
         batch_size_css_class = self.fields["batch_size"].widget.attrs.get("class", "")
         name_css_class = self.fields["name"].widget.attrs.get("class", "")
-        self.fields["batch_size"].widget.attrs.update({"class":"{} input-lg".format(batch_size_css_class)})
-        self.fields["name"].widget.attrs.update({"class":"{} input-lg".format(name_css_class)})
-        self.fields["recipe_style"].choices = style_choices()
+        self.fields["batch_size"].widget.attrs.update({"class": "{} input-lg".format(batch_size_css_class)})
+        self.fields["name"].widget.attrs.update({"class": "{} input-lg".format(name_css_class)})
+        self.fields["recipe_style"].choices = style_choices(initial_style=self.instance.style)
 
         if self.instance.style:
             self.initial['recipe_style'] = str(self.instance.style.pk)
@@ -193,7 +196,6 @@ class RecipeSearchForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super(RecipeSearchForm, self).__init__(*args, **kwargs)
         self.fields["style"].choices = style_choices(qs_kwargs={'recipe__id__isnull': False})
-
 
     def search(self, qs):
         data = self.cleaned_data
