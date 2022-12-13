@@ -11,7 +11,7 @@ class YeastAdmin(admin.ModelAdmin):
 
 
 class BeerStyleAdmin(admin.ModelAdmin):
-    list_display = ("name", "get_number", 'guide',)
+    list_display = ("name", "get_number", 'guide', "original_gravity_min")
     list_filter = ("guide", )
 
 

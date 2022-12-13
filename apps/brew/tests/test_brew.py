@@ -1,11 +1,57 @@
 from django.test import TestCase
 from django.test.client import Client
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.urls import reverse
 from brew.models import *
+from brew.forms import style_choices
 from public.utils import show_in_browser
 from public.utils.testing import AjaxCallsTestCaseBase
 import json
+
+
+class BeerStyleTest(TestCase):
+    fixtures = [
+        "initial_data.json"
+    ]
+
+    def test_is_outdated(self):
+        style = BeerStyle.objects.all()[0]
+
+        style.guide = settings.ACTIVE_BJCP_YEAR
+        self.assertFalse(style.is_outdated())
+
+        style.guide = "BJCP 1860"
+        self.assertTrue(style.is_outdated())
+
+    def test_get_dated_name(self):
+        style = BeerStyle.objects.all()[0]
+        style.guide = settings.ACTIVE_BJCP_YEAR
+        self.assertEqual(style.get_dated_name(), "1.A - Lite American Lager")
+
+        style.guide = "BJCP 1860"
+        self.assertEqual(style.get_dated_name(), "1.A - Lite American Lager - BJCP 1860")
+
+    def test_form_style_choices(self):
+        BeerStyle.objects.all().update(guide=settings.ACTIVE_BJCP_YEAR)
+        old_style = BeerStyle.objects.all()[0]
+        old_style.guide = "BJCP 1999"
+        old_style.save()
+        choices = [s[1] for c in style_choices(initial_style=old_style) for s in c[1]]
+        self.assertEqual(len(choices), BeerStyle.objects.all().count())
+
+        current_style = BeerStyle.objects.get_active_styles()[0]
+        choices = [s[1] for c in style_choices(initial_style=current_style) for s in c[1] if isinstance(c, list)]
+        self.assertEqual(len(choices), BeerStyle.objects.get_active_styles().count())
+
+    def test_manager_get_active_styles(self):
+        BeerStyle.objects.all().update(guide="BJCP 1999")
+        style = BeerStyle.objects.all()[0]
+        style.guide = settings.ACTIVE_BJCP_YEAR
+        style.save()
+        active_styles = BeerStyle.objects.get_active_styles()
+        self.assertEqual(active_styles.count(), 1)
+        self.assertEqual(active_styles[0], style)
 
 
 class RecipeTest(AjaxCallsTestCaseBase, TestCase):
@@ -21,6 +67,7 @@ class RecipeTest(AjaxCallsTestCaseBase, TestCase):
 
     def setUp(self):
         # Set up the main user
+        BeerStyle.objects.all().update(guide=settings.ACTIVE_BJCP_YEAR)
         user = User(
             username=self.user_info['username'],
             email=self.user_info['email']
