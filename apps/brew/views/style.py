@@ -1,4 +1,5 @@
-from django.views.generic import ListView,  DetailView
+from django.conf import settings
+from django.views.generic import ListView, DetailView
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
 
@@ -33,6 +34,14 @@ class StyleRecipeView(RecipeListView):
 
 class StyleListView(ListView):
     model = BeerStyle
+
+    def get_queryset(self):
+        return BeerStyle.objects.get_active_styles()
+
+    def get_context_data(self, **kwargs):
+        context = super(StyleListView, self).get_context_data(**kwargs)
+        context["active_bjcp"] = settings.ACTIVE_BJCP_YEAR
+        return context
 
 
 class StyleDetailView(DetailView):

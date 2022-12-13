@@ -20,7 +20,7 @@ from units.conversions import kg_to_lb, ebc_to_srm, \
 from .fields import BitternessField, GravityField, ColorField
 from .models_base import *
 from . import formulas
-from .managers import RecipeManager
+from .managers import RecipeManager, BeerStyleManager
 from . import settings as app_settings
 
 
@@ -79,6 +79,8 @@ class BeerStyle(models.Model):
     ingredients = models.TextField(blank=True, null=True)
     examples = models.TextField(blank=True, null=True)
 
+    objects = BeerStyleManager()
+
     def get_slug(self):
         return u"%s" % slugify(self.name)
 
@@ -87,6 +89,18 @@ class BeerStyle(models.Model):
 
     def __str__(self):
         return "%s - %s" % (self.get_number(), self.name)
+
+    def is_outdated(self):
+        return self.guide != settings.ACTIVE_BJCP_YEAR
+
+    def get_dated_name(self):
+        """
+        Returns the name and if the style is outdated, the guide year is added at the end.
+        """
+        name_elmts = [self.get_number(), self.name]
+        if self.is_outdated():
+            name_elmts.append(self.guide)
+        return " - ".join(name_elmts)
 
     def get_absolute_url(self):
         return reverse('brew_style_detail', args=[self.id])
@@ -105,6 +119,7 @@ class BeerStyle(models.Model):
 
     def alcohol_range(self):
         return [self.alcohol_min, self.alcohol_max]
+
 
     class Meta:
         ordering = ('number', 'sub_number')
