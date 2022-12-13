@@ -63,18 +63,6 @@ Le serveur devrait être accessible depuis un navigateur à l'URL
 indiquer dans le fichier `.env`).
 
 
-TODO list
-=========
-
-N'hésitez pas à me faire part de vos remarques via le Tipee ci-dessus. Ce sont vos retours qui me permettent de peser les priorités
-
- * Ecrire plus de tests automatiques
- * Ajout d'eau dans la recette à n'importe quel moment
- * Ajout de grain pendant l'ébullition
- * Ajout d'épice pendant l'empattage
- * Différencier visuellement l'empattage de l'ébullition (fiche recette plus élaborée ?)
- * Export au format BeerXML
-
 
 Licence
 =======
